@@ -1,6 +1,6 @@
 # project_13
 
-GoIT-Python-Core-AqsisstantProject
+GoIT-Python-Core-AsisstantProject
 
 Перед встановленням пакета перевірте наявність PIP.
 
