@@ -10,10 +10,17 @@ def delete_all_command():
     ...
 def delete_command():
     ...
-def help_command():
-    ...
-def exit_command():
-    ...
+
+
+def help_command(ui, *_):
+    ui.show_help()
+
+
+def exit_command(ui, *_):
+    ui.show_green_message(f"Good bye!")
+    exit()
+
+
 def sort_command():
     ...
 def unknown_command():
@@ -27,14 +34,14 @@ def parser(ui, text):
             if text.strip().lower().split()[0] == kwd:
                 return cmd, text[len(kwd):].strip().split(" ")
     
-    closest_cmd = levenshtein_distance(text.strip().split()[0].lower())
+    closest_cmd = levenshtein_distance(ui, text.strip().split()[0].lower())
     if closest_cmd:
        return parser(ui, text.replace(text.strip().split()[0], closest_cmd, 1)) 
 
     return unknown_command, []
 
 
-def levenshtein_distance(str_to_check):
+def levenshtein_distance(ui, str_to_check):
     distance = len(str_to_check)
     possible_cmd = None
     for kwds in CMD_LIST.values():
@@ -55,8 +62,8 @@ def levenshtein_distance(str_to_check):
                 distance = dp[m][n]
                 possible_cmd = cmd
     if distance < len(str_to_check):
-        print(f'Did you mean "{possible_cmd} "?')
-        if input('Y/n:  ').lower() in ('y', 'yes'):
+        ui.show_message(f'Did you mean "{possible_cmd} "?')
+        if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
             return possible_cmd
 
 
