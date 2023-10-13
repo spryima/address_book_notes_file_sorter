@@ -11,7 +11,7 @@ def main():
     ui.show_start_message()
     
     while True:
-        message = ui.ask_question_input("   >>> ")
+        message = ui.user_input("   >>> ")
         cmd, data = parser(ui, message)
         cmd(ui, *data)
 
