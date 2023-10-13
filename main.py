@@ -1,15 +1,18 @@
 from classes.uiclasses import ConsoleUserInterface    
+from classes.abclasses import AddressBook
 from mainfunc import parser
 
 
 def main():
     ui = ConsoleUserInterface()
+    
+    ab = AddressBook()
+    
     ui.show_start_message()
-
-
+    
     while True:
         message = ui.ask_question_input("   >>> ")
-        cmd, data = parser(message)
+        cmd, data = parser(ui, message)
         cmd(ui, *data)
 
 
