@@ -38,6 +38,10 @@ delete all                          - delete Address Book
         print(f'\033[92m{text}\033[0m', end="")
     
     @staticmethod
+    def show_red_message(text):
+        print(f'\033[91m{text}\033[0m', end="")
+    
+    @staticmethod
     def clear_screen():
         os.system('cls' if os.name == 'nt' else 'clear')
     
