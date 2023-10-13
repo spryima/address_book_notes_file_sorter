@@ -5,13 +5,13 @@ import re
 from pathlib import Path
 
 #EXTENSIONS
-images = ('.jpeg', '.png', '.jpg', '.svg', '.webp', '.JPG', '.PNG')
-video = ('.avi', '.mp4', '.mov', '.mkv','.MP4')
-docs = ('.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx', '.html')
-music = ('.mp3', '.ogg', '.wav', '.amr')
-apps = ('.exe', '.dmg', '.pkg')
-archs = ('.zip', '.gz', '.tar')
-known_ext = set(images + video + docs + music + archs + apps)
+EXTENSIONS = {
+"images" : ('.jpeg', '.png', '.jpg', '.svg', '.webp', '.JPG', '.PNG'),
+"videos" : ('.avi', '.mp4', '.mov', '.mkv','.MP4'),
+"docs" : ('.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx', '.html'),
+"music" : ('.mp3', '.ogg', '.wav', '.amr'),
+"apps" : ('.exe', '.dmg', '.pkg'),
+"archs" : ('.zip', '.gz', '.tar') }
 
 #EXTENSIONS WHICH WERE SORTED
 extension_set = set()
@@ -34,16 +34,12 @@ args = parser.parse_args()
 path = args.folder_path
 
 #DIRS
-lists = [images, video, docs, music, archs, apps]
 dirs = ["images", "videos", "docs", "music", "archives", "apps", "bin", "another"]
-dirs_set = set(dirs)
 
 #TRANSLITION
-CYRILLIC = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
-LATIN = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
-               "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g")
 TRANS = {}
-for c, l in zip(CYRILLIC, LATIN):
+for c, l in zip("абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ", ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
+               "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g")):
     TRANS[ord(c)] = l
     TRANS[ord(c.upper())] = l.upper()
 
@@ -68,9 +64,9 @@ def cut(ins):
 def move_empty_folders(path):
     with os.scandir(path) as files:
         for file in files:
-            if file.name not in dirs_set:
+            if file.name not in set(dirs):
                 if os.path.isdir(file.path):
-                    if file.name not in dirs_set:
+                    if file.name not in set(dirs):
                         target_dir = os.path.join(path, "bin")
                         os.makedirs(target_dir, exist_ok = True)
                         shutil.move(file.path, os.path.join(target_dir, file.name))
@@ -90,7 +86,7 @@ def sort(path, path_ = path):
     with os.scandir(path_) as files:
         for file in files:
             extension_set.add((Path(file.path).suffix))
-            for list,dir in zip(lists, dirs):
+            for list, dir in zip(EXTENSIONS.values(), dirs):
                 if file.name.endswith(list):
                     try:
                         files_dict[dir].append(file.name)
@@ -100,7 +96,7 @@ def sort(path, path_ = path):
                     except FileNotFoundError:
                         continue
                 #FINDING AND UNARCHIVATING ZIPS
-                elif file.name.endswith(archs):
+                elif file.name.endswith(EXTENSIONS["archs"]):
                     files_dict["archives"].append(file.name)
                     target_dir = os.path.join(path, "archives"+ "/" + normalize((file.name).rsplit(".",1)[0]))
                     os.makedirs(target_dir, exist_ok = True)
@@ -140,8 +136,12 @@ if __name__ == "__main__":
                     print("|{:^25}|".format(cut(i)))
                 print("|{:^25}|".format("-----------"))
         print("|{:^25}|".format(""))
+        
+        all_extensions = set()
+        for extensions_tuple in EXTENSIONS.values():
+            all_extensions.update(extensions_tuple)
 
-        unknown_ext = extension_set - known_ext
+        unknown_ext = extension_set - all_extensions
         print(f"unknown by script extensions: {unknown_ext}")
         print(f"previously known by script extensions: {extension_set - unknown_ext}")
     else:
