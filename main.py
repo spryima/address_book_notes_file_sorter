@@ -27,12 +27,15 @@ def find_command(text):
     ui.show_message("\n".join(str(contact) for contact in ab.values() if text in str(contact)))
 
 
-def delete_all_command():
-    ...
+def delete_all_command(*_):
+    ab.delete_all(ui)
 
 
-def delete_command():
-    ...
+def delete_command(surname):
+    if surname in ab:
+        ab.delete_contact(ui, ab[surname])
+    else:
+        ui.show_red_message(f'No contacts with surname {surname}')
 
 
 def help_command(*_):
@@ -66,7 +69,7 @@ def parser(text):
     try:    
         for cmd, kwds in CMD_LIST.items():
             for kwd in kwds:
-                if text.strip().lower().split()[0] == kwd:
+                if text.lower().startswith(kwd):
                     return cmd, text[len(kwd):].strip().split(" ")
         
         closest_cmd = levenshtein_distance(text.strip().split()[0].lower())
@@ -106,7 +109,7 @@ CMD_LIST = {
     find_command: ("find",),
     change_command: ("change",),
     show_all_command: ("show all", "show"),
-    delete_all_command: ("delete all", "remove all"),
+    delete_all_command: ("delete all", "remove all", "clean"), 
     delete_command: ("delete", "del", "remove"),
     help_command: ("help", "h", "?"),
     exit_command: ("exit", "quit", "goodbye",  "."),

@@ -46,8 +46,6 @@ class Contact():
         if new_email:
             self.email = new_email
 
-    def delete_phone(self, value: str):
-        pass
 
     def __repr__(self) -> str:
         return "Surname: {:<10}  Name: {:<10}  Phone: {:<15}  Email: {:<15}  Birthday: {}".format(
@@ -91,14 +89,22 @@ class AddressBook(UserDict):
         contact.update_email(ui.user_input(f'Email: {contact.email} [Enter to skip]: '))
 
 
-    def delete_contact(self, name):
-        if name in self.data:
-            del self.data[name]
+    def delete_contact(self, ui, contact: Contact):
+        ui.show_red_message(f'Are you sure you want to delete the contact {contact.surname}?\n')
+        if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
+            del self.data[contact.surname]
 
 
     def show_contacts(self):
         pass
     
+
+    def delete_all(self, ui):
+        ui.show_red_message('Are you sure you want to clear the address book?\n')
+        if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
+            self.data.clear()
+
+
     def log(self, action):
         time = date.strftime(date.now(), '%H:%M:%S')
         msg = f'[{time} {action}]'
@@ -108,7 +114,7 @@ class AddressBook(UserDict):
     def save(self, file_name):
         with open(file_name + ".bin", "wb") as file:
             pckl.dump(self.data, file)
-        self.log(f'AdressBook saved')
+        self.log(f'AddressBook saved')
     
     def load(self, file_name):
         try:
@@ -116,7 +122,7 @@ class AddressBook(UserDict):
                 self.data = pckl.load(file)
         except FileNotFoundError:
             ...
-        self.log(f'AdressBook loaded')
+        self.log(f'AddressBook loaded')
         return self.data
 
 
