@@ -26,12 +26,6 @@ files_dict = {
     "another":[],
 }
 
-#CONSOLE ARGS
-parser = argparse.ArgumentParser(description = "sort files by type")
-parser.add_argument("folder_path")
-args = parser.parse_args()
-path = args.folder_path
-
 #DIRS
 dirs = ["images", "videos", "docs", "music", "apps", "archives", "bin", "another"]
 
@@ -133,7 +127,7 @@ def sort(path, path_ = path):
             target_dir.mkdir(parents=False, exist_ok=True)
             move(target_dir, file)
 
-def main(path):
+def clear(path):
 
     sort(path)
     rename_all(path)
@@ -160,4 +154,3 @@ def main(path):
     else:
         print("No sort was performed")
         
-main(path)
