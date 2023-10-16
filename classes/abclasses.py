@@ -29,6 +29,10 @@ class Contact():
         if birthday:
             self.birthday = birthday    
 
+    def add_address(self, address):
+        if address:
+            self.address = address
+
     def update_surname(self, new_surname):
             self.surname = new_surname
 
@@ -47,14 +51,22 @@ class Contact():
         if new_email:
             self.email = new_email
 
+    def update_address(self, new_address):
+        if new_address:
+            self.address = new_address
+
+    def delete_phone(self, value: str):
+        pass
+
 
     def __repr__(self) -> str:
-        return "Surname: {:<10}  Name: {:<10}  Phone: {:<15}  Email: {:<15}  Birthday: {}".format(
+        return "Surname: {:<10}  Name: {:<10}  Phone: {:<15}  Email: {:<15}  Birthday: {}  Address: {:<15}".format(
             self.surname,
             self.name,
             ", ".join(phone for phone in self.phones),
             self.email,
             self.birthday,
+            self.address,
         )
     
 
@@ -68,6 +80,7 @@ class AddressBook(UserDict):
             contact.add_phone(ui.user_input('Phones space-separate [Enter to skip]: ').split())
             contact.add_birthday(ui.user_input('Birthday [Enter to skip]: '))
             contact.add_email(ui.user_input('Email [Enter to skip]: '))
+            contact.add_address(ui.user_input('Address [Enter to skip]: '))
         
 
     def read_contact(self, name: str):
@@ -88,6 +101,7 @@ class AddressBook(UserDict):
         contact.update_phone(ui.user_input(f'Phones {contact.phones} [Enter to skip]: ').split())
         contact.update_birthday(ui.user_input(f'Birthday: {contact.birthday} [Enter to skip]: '))
         contact.update_email(ui.user_input(f'Email: {contact.email} [Enter to skip]: '))
+        contact.update_address(ui.user_input(f'Address: {contact.address} [Enter to skip]: '))
 
 
     def delete_contact(self, ui, contact: Contact):
