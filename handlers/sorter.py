@@ -68,7 +68,7 @@ def move_empty_folders(path: Path) -> None:
                     target_dir = Path(path, "bin")
                     target_dir.mkdir(parents=False, exist_ok=True)
                     try:
-                        shutil.move(file, Path(target_dir, file.name))
+                        move(target_dir, file)
                     except shutil.Error as e:
                         print(e)
          
@@ -83,6 +83,25 @@ def rename_all(path:Path) -> None:
             except NotADirectoryError:
                 ...
             #ALREADY RENAMED
+            
+def get_unique_name(file: Path) -> Path:
+    new_id = 1
+    while file.exists():
+        if new_id > 1:
+            file = file.parent.joinpath(f'{file.stem.rsplit("_", 1)[0]}_{new_id}{file.suffix}')
+        else:
+            file = file.parent.joinpath(f'{file.stem}_{new_id}{file.suffix}')
+        new_id +=1
+    return file
+            
+def move(move_to_dir, file):
+    future_file = Path(move_to_dir, file.name)
+    if future_file.exists():
+        future_file = get_unique_name(future_file)
+    try:
+        shutil.move(file, future_file)
+    except FileNotFoundError:
+        ... 
 
 #SORTING
 def sort(path, path_ = path):
@@ -90,13 +109,10 @@ def sort(path, path_ = path):
         extension_set.add((file.suffix))
         for list, dir in zip(EXTENSIONS.values(), dirs):
             if file.name.endswith(list):
-                try:
-                    files_dict[dir].append(file.name)
-                    target_dir = Path(path, dir)
-                    target_dir.mkdir(parents=False, exist_ok=True)
-                    shutil.move(file, Path(target_dir, file.name))
-                except FileNotFoundError:
-                    print("exists")
+                files_dict[dir].append(file.name)
+                target_dir = Path(path, dir)
+                target_dir.mkdir(parents=False, exist_ok=True)
+                move(target_dir, file)
             #FINDING AND UNARCHIVATING ZIPS
             elif file.name.endswith(EXTENSIONS["archs"]):
                 files_dict["archives"].append(file.name)
@@ -111,14 +127,11 @@ def sort(path, path_ = path):
                 
     #COLLECTING ALL UNKNOWN EXTENSION FILES
     for file in Path(path).iterdir():
-        try:
-            if Path(file).is_file():
-                files_dict["another"].append(file.name)
-                target_dir = Path(path, "another")
-                target_dir.mkdir(parents=False, exist_ok=True)
-                shutil.move(file, Path(target_dir, file.name))
-        except FileNotFoundError:
-            continue
+        if Path(file).is_file():
+            files_dict["another"].append(file.name)
+            target_dir = Path(path, "another")
+            target_dir.mkdir(parents=False, exist_ok=True)
+            move(target_dir, file)
 
 def main(path):
 
