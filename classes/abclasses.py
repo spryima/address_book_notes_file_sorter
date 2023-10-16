@@ -100,7 +100,7 @@ class AddressBook(UserDict):
         contact.update_phone(ui.user_input(f'Phones {contact.phones} [Enter to skip]: ').split())
         contact.update_birthday(ui.user_input(f'Birthday: {contact.birthday} [Enter to skip]: '))
         contact.update_email(ui.user_input(f'Email: {contact.email} [Enter to skip]: '))
-        contact.update_address(ui.user_input(f'Address: {contact.address} [Enter to skip: '))
+        contact.update_address(ui.user_input(f'Address: {contact.address} [Enter to skip]: '))
 
 
     def delete_contact(self, name):
