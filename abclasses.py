@@ -79,7 +79,7 @@ class Contact():
     @phone.setter
     def phone(self, phone: str):
         san_phone = re.sub(r'[-)( ]', '', phone)
-        if re.match('^\\0\d{9}$', san_phone):
+        if re.match('^\\0\d{11}$', san_phone):
             self._phone = san_phone
         else:
             raise ValueError("Phone number is not valid")
