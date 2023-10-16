@@ -46,18 +46,6 @@ class Contact():
         if new_email:
             self.email = new_email
 
-    def read_surname(self):
-        pass
-
-    def read_birthday(self):
-        pass
-
-    def read_email(self):
-        pass
-
-    def read_phones(self):
-        pass
-
     def delete_phone(self, value: str):
         pass
 
