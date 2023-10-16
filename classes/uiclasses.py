@@ -6,8 +6,22 @@ import os
 class ConsoleUserInterface():
     help_message = """
                         List of all commands:
-help   - show this list
+'add', '+' - adding a new contact to the address book
+'change' - changing an existing contact
+'find' - searching for contacts by entering the entered text in a property value
+'del', 'delete', 'remove' - delete a contact from the address book
+'delete all', 'remove all', 'clean' - complete cleaning of the address book
+'show all', 'show' - display of all contacts in the address book
+'sort' - sorting files in directories
+'exit', 'quit', 'goodbye',  '.'  - completion of work with the address book, automatic saving of changes made
 
+The Address Book contact has the following properties:
+ - surname (str),
+ - name (str),
+ - phones (list of str),
+ - email (str),
+ - birthday (date),
+ - address (str)
 
 """
     
@@ -35,4 +49,8 @@ help   - show this list
 
     def show_start_message(self):
         ConsoleUserInterface.clear_screen()
-        ConsoleUserInterface.show_green_message('                 "ADDRESS BOOK"')
+        hello_message = '''                 "PROGRAMMULINKA"
+        What's up buddy!
+        I will be your assistant!'''
+        ConsoleUserInterface.show_green_message(hello_message)
+        
