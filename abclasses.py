@@ -1,6 +1,7 @@
 from collections import UserDict
 from datetime import datetime as date
 import pickle as pckl
+import re
 
 
 class Contact():
@@ -10,7 +11,6 @@ class Contact():
         self.phones = []
         self.birthday = ''
         self.email = ''
-        self.address = ''
 
     def add_name(self, name):
         if name:
@@ -28,10 +28,6 @@ class Contact():
     def add_birthday(self, birthday):
         if birthday:
             self.birthday = birthday    
-
-    def add_address(self, address):
-        if address:
-            self.address = address
 
     def update_surname(self, new_surname):
             self.surname = new_surname
@@ -51,23 +47,66 @@ class Contact():
         if new_email:
             self.email = new_email
 
-    def update_address(self, new_address):
-        if new_address:
-            self.address = new_address
+    def read_surname(self):
+        pass
+
+    def read_birthday(self):
+        pass
+
+    def read_email(self):
+        pass
+
+    def read_phones(self):
+        pass
 
     def delete_phone(self, value: str):
         pass
 
-
     def __repr__(self) -> str:
-        return "Surname: {:<10}  Name: {:<10}  Phone: {:<15}  Email: {:<15}  Birthday: {}  Address: {:<15}".format(
+        return "Surname: {:<10}  Name: {:<10}  Phone: {:<15}  Email: {:<15}  Birthday: {}".format(
             self.surname,
             self.name,
             ", ".join(phone for phone in self.phones),
             self.email,
             self.birthday,
-            self.address,
         )
+       
+    #Правильность ввода номера телефона
+    @property
+    def phone(self):
+        return self._phone
+
+    @phone.setter
+    def phone(self, phone: str):
+        san_phone = re.sub(r'[-)( ]', '', phone)
+        if re.match('^\\0\d{11}$', san_phone):
+            self._phone = san_phone
+        else:
+            raise ValueError("Phone number is not valid")
+
+    #Правильность ввода электронной почты
+    @property
+    def email(self):
+        return self._email
+
+    @email.setter
+    def email(self, email: str):
+        if re.match('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email):
+            self._email = email 
+        else:
+            raise ValueError("Email is not valid")
+
+    #правильность ввода даты
+    @property
+    def birthday(self):
+        return self._birthday
+
+    @birthday.setter
+    def birthday(self, date):
+        if re.match('^\d{2}.\d{2}.\d{4}$', date): 
+            self._birthday = date 
+        else:
+            raise ValueError("Birthday is not valid")
     
 
 class AddressBook(UserDict):
@@ -80,7 +119,6 @@ class AddressBook(UserDict):
             contact.add_phone(ui.user_input('Phones space-separate [Enter to skip]: ').split())
             contact.add_birthday(ui.user_input('Birthday [Enter to skip]: '))
             contact.add_email(ui.user_input('Email [Enter to skip]: '))
-            contact.add_address(ui.user_input('Address [Enter to skip]: '))
         
 
     def read_contact(self, name: str):
@@ -101,25 +139,16 @@ class AddressBook(UserDict):
         contact.update_phone(ui.user_input(f'Phones {contact.phones} [Enter to skip]: ').split())
         contact.update_birthday(ui.user_input(f'Birthday: {contact.birthday} [Enter to skip]: '))
         contact.update_email(ui.user_input(f'Email: {contact.email} [Enter to skip]: '))
-        contact.update_address(ui.user_input(f'Address: {contact.address} [Enter to skip]: '))
 
 
-    def delete_contact(self, ui, contact: Contact):
-        ui.show_red_message(f'Are you sure you want to delete the contact {contact.surname}?\n')
-        if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
-            del self.data[contact.surname]
+    def delete_contact(self, name):
+        if name in self.data:
+            del self.data[name]
 
 
     def show_contacts(self):
         pass
     
-
-    def delete_all(self, ui):
-        ui.show_red_message('Are you sure you want to clear the address book?\n')
-        if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
-            self.data.clear()
-
-
     def log(self, action):
         time = date.strftime(date.now(), '%H:%M:%S')
         msg = f'[{time} {action}]'
@@ -129,7 +158,7 @@ class AddressBook(UserDict):
     def save(self, file_name):
         with open(file_name + ".bin", "wb") as file:
             pckl.dump(self.data, file)
-        self.log(f'AddressBook saved')
+        self.log(f'AdressBook saved')
     
     def load(self, file_name):
         try:
@@ -137,7 +166,7 @@ class AddressBook(UserDict):
                 self.data = pckl.load(file)
         except FileNotFoundError:
             ...
-        self.log(f'AddressBook loaded')
+        self.log(f'AdressBook loaded')
         return self.data
 
 
