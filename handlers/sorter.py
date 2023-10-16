@@ -1,4 +1,3 @@
-import os
 import shutil
 import argparse
 import re
@@ -34,7 +33,7 @@ args = parser.parse_args()
 path = args.folder_path
 
 #DIRS
-dirs = ["images", "videos", "docs", "music", "archives", "apps", "bin", "another"]
+dirs = ["images", "videos", "docs", "music", "apps", "archives", "bin", "another"]
 
 #TRANSLITION
 TRANS = {}
@@ -44,7 +43,7 @@ for c, l in zip("абвгдеёжзийклмнопрстуфхцчшщъыьэ�
     TRANS[ord(c.upper())] = l.upper()
 
 #NORMALIZING TEXT
-def normalize(line):
+def normalize(line: str) -> str:
     separate=line.rsplit(".", 1)
     line = separate[0]
     line = line.translate(TRANS)
@@ -55,72 +54,73 @@ def normalize(line):
         return(line)
 
 #CUTTING TEXT TO 20 SYMBOLS
-def cut(ins):
+def cut(ins: str) -> str:
     if len(ins)>20:
-        ins=ins[:17] +"..."
+        ins = ins[:17] +"..."
     return ins
 
 #MOVING EMPTY FOLDERS TO BIN
-def move_empty_folders(path):
-    with os.scandir(path) as files:
-        for file in files:
-            if file.name not in set(dirs):
-                if os.path.isdir(file.path):
-                    if file.name not in set(dirs):
-                        target_dir = os.path.join(path, "bin")
-                        os.makedirs(target_dir, exist_ok = True)
-                        shutil.move(file.path, os.path.join(target_dir, file.name))
-
-    
+def move_empty_folders(path: Path) -> None:
+    for file in Path(path).iterdir():
+        if file.name not in set(dirs):
+            if Path.is_dir(file):
+                if file.name not in set(dirs):
+                    target_dir = Path(path, "bin")
+                    target_dir.mkdir(parents=False, exist_ok=True)
+                    try:
+                        shutil.move(file, Path(target_dir, file.name))
+                    except shutil.Error as e:
+                        print(e)
+         
 #NORMALIZING FILE'S NAMES
-def rename_all(path):
-        with os.scandir(path) as files:
-                for file in files:
-                    if os.path.isdir(file):
-                        rename_all(file.path)
-                    else:
-                        os.rename(file.path, os.path.dirname(file.path) + "/" + normalize(file.name))
+def rename_all(path:Path) -> None:
+    for file in Path(path).iterdir():
+        if Path.is_dir(file):
+            rename_all(file)
+        else:
+            try:
+                Path(file).rename(Path(file.parent, normalize(file.name)))
+            except NotADirectoryError:
+                ...
+            #ALREADY RENAMED
 
 #SORTING
 def sort(path, path_ = path):
-    with os.scandir(path_) as files:
-        for file in files:
-            extension_set.add((Path(file.path).suffix))
-            for list, dir in zip(EXTENSIONS.values(), dirs):
-                if file.name.endswith(list):
-                    try:
-                        files_dict[dir].append(file.name)
-                        target_dir = os.path.join(path, dir)
-                        os.makedirs(target_dir, exist_ok=True)
-                        shutil.move(file.path, os.path.join(target_dir, file.name))
-                    except FileNotFoundError:
-                        continue
-                #FINDING AND UNARCHIVATING ZIPS
-                elif file.name.endswith(EXTENSIONS["archs"]):
-                    files_dict["archives"].append(file.name)
-                    target_dir = os.path.join(path, "archives"+ "/" + normalize((file.name).rsplit(".",1)[0]))
-                    os.makedirs(target_dir, exist_ok = True)
-                    try:
-                        shutil.unpack_archive(file.path, target_dir)
-                    except shutil.ReadError:
-                        ...
-                elif os.path.isdir(file.path) and file.name not in dirs:
-                    sort(path, path_ + "/" + file.name)
-                    
+    for file in Path(path_).iterdir():
+        extension_set.add((file.suffix))
+        for list, dir in zip(EXTENSIONS.values(), dirs):
+            if file.name.endswith(list):
+                try:
+                    files_dict[dir].append(file.name)
+                    target_dir = Path(path, dir)
+                    target_dir.mkdir(parents=False, exist_ok=True)
+                    shutil.move(file, Path(target_dir, file.name))
+                except FileNotFoundError:
+                    print("exists")
+            #FINDING AND UNARCHIVATING ZIPS
+            elif file.name.endswith(EXTENSIONS["archs"]):
+                files_dict["archives"].append(file.name)
+                target_dir = Path(path, "archives/" + normalize((file.name).rsplit(".",1)[0]))
+                target_dir.mkdir(parents=False, exist_ok=True)
+                try:
+                    shutil.unpack_archive(file, target_dir)
+                except shutil.ReadError:
+                    ...
+            elif Path(file).is_dir() and file.name not in dirs:
+                sort(path, path_ + "/" + file.name)
+                
     #COLLECTING ALL UNKNOWN EXTENSION FILES
-    with os.scandir(path_) as files:
-        for file in files:
-            try:
-                if os.path.isfile(file.path):
-                    files_dict["another"].append(file.name)
-                    target_dir = os.path.join(path, "another")
-                    os.makedirs(target_dir, exist_ok=True)
-                    shutil.move(file.path, os.path.join(target_dir, file.name))
-            except FileNotFoundError:
-                continue
+    for file in Path(path).iterdir():
+        try:
+            if Path(file).is_file():
+                files_dict["another"].append(file.name)
+                target_dir = Path(path, "another")
+                target_dir.mkdir(parents=False, exist_ok=True)
+                shutil.move(file, Path(target_dir, file.name))
+        except FileNotFoundError:
+            continue
 
-#ENTRY POINT
-if __name__ == "__main__":
+def main(path):
 
     sort(path)
     rename_all(path)
@@ -146,4 +146,5 @@ if __name__ == "__main__":
         print(f"previously known by script extensions: {extension_set - unknown_ext}")
     else:
         print("No sort was performed")
-    
+        
+main(path)
