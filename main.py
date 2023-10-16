@@ -62,17 +62,19 @@ def exit_command(*_):
 
 
 def parser(text):
-    for cmd, kwds in CMD_LIST.items():
-        for kwd in kwds:
-            if text.strip().lower().split()[0] == kwd:
-                return cmd, text[len(kwd):].strip().split(" ")
-    
-    closest_cmd = levenshtein_distance(text.strip().split()[0].lower())
-    if closest_cmd:
-       return parser(text.replace(text.strip().split()[0], closest_cmd, 1)) 
-
+    closest_cmd = ''
+    try:    
+        for cmd, kwds in CMD_LIST.items():
+            for kwd in kwds:
+                if text.strip().lower().split()[0] == kwd:
+                    return cmd, text[len(kwd):].strip().split(" ")
+        
+        closest_cmd = levenshtein_distance(text.strip().split()[0].lower())
+        if closest_cmd:
+            return parser(text.replace(text.strip().split()[0], closest_cmd, 1))       
+    except IndexError as e:        
+        return unknown_command, [] 
     return unknown_command, []
-
 
 def levenshtein_distance(str_to_check):
     distance = len(str_to_check)
