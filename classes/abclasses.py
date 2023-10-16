@@ -10,6 +10,7 @@ class Contact():
         self.phones = []
         self.birthday = ''
         self.email = ''
+        self.address = ''
 
     def add_name(self, name):
         if name:

@@ -20,7 +20,8 @@ The Address Book contact has the following properties:
  - name (str),
  - phones (list of str),
  - email (str),
- - birthday (date)
+ - birthday (date),
+ - address (str)
 
 """
     
