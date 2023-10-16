@@ -98,7 +98,8 @@ def move(move_to_dir, file):
         ... 
 
 #SORTING
-def sort(path, path_ = path):
+def sort(path, path_ = None):
+    path_ = path
     for file in Path(path_).iterdir():
         extension_set.add((file.suffix))
         for list, dir in zip(EXTENSIONS.values(), dirs):
