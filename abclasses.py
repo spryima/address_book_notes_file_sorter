@@ -70,7 +70,6 @@ class Contact():
             self.email,
             self.birthday,
         )
-    #   --------------------------------Chek parameters----------------------------
        
     #Правильность ввода номера телефона
     @property
@@ -80,11 +79,11 @@ class Contact():
     @phone.setter
     def phone(self, phone: str):
         san_phone = re.sub(r'[-)( ]', '', phone)
-        if re.match('^\\+380\d{9}$', san_phone):
+        if re.match('^\\0\d{9}$', san_phone):
             self._phone = san_phone
         else:
             raise ValueError("Phone number is not valid")
-    #-------email checking_____________________________________________
+
     #Правильность ввода электронной почты
     @property
     def email(self):
@@ -96,9 +95,7 @@ class Contact():
             self._email = email 
         else:
             raise ValueError("Email is not valid")
-        
 
-    #-------birthday checking_____________________________________________
     #правильность ввода даты
     @property
     def birthday(self):
