@@ -1,11 +1,9 @@
 from classes.uiclasses import ConsoleUserInterface    
 from classes.abclasses import AddressBook, Contact
 
-
-
-
 def main():    
     ui.show_start_message()
+    ab.load("auto_save")
     
     while True:
         message = ui.user_input(f'\033[94m >>> \033[0m')
@@ -57,6 +55,7 @@ def sort_command():
 
 def exit_command(*_):
     ui.show_green_message(f"\nGood bye!\n\n")
+    ab.save("auto_save")
     exit()
 
 
@@ -99,8 +98,7 @@ def levenshtein_distance(str_to_check):
         ui.show_message(f'Did you mean "{possible_cmd} "?')
         if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
             return possible_cmd
-
-
+        
 CMD_LIST = {
     add_command: ("add", "+"),
     find_command: ("find",),

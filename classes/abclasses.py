@@ -1,4 +1,6 @@
 from collections import UserDict
+from datetime import datetime as date
+import pickle as pckl
 
 
 class Contact():
@@ -108,6 +110,27 @@ class AddressBook(UserDict):
 
     def show_contacts(self):
         pass
+    
+    def log(self, action):
+        time = date.strftime(date.now(), '%H:%M:%S')
+        msg = f'[{time} {action}]'
+        with open("logs.txt", "a") as file:
+            file.write(f'{msg}\n')
+
+    def save(self, file_name):
+        with open(file_name + ".bin", "wb") as file:
+            pckl.dump(self.data, file)
+        self.log(f'AdressBook saved')
+    
+    def load(self, file_name):
+        try:
+            with open(file_name + ".bin", "rb") as file:
+                self.data = pckl.load(file)
+        except FileNotFoundError:
+            ...
+        self.log(f'AdressBook loaded')
+        return self.data
+
 
 
 
