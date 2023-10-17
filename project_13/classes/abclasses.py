@@ -2,7 +2,9 @@ from collections import UserDict
 from datetime import datetime as date
 import pickle as pckl
 import re
-from ..main import ui
+
+from classes.exceptionclasses import NoSuchPhone, InvalidFormat
+
 
 
 class Contact():
@@ -21,6 +23,7 @@ class Contact():
 
     def add_phone(self, phones):
         if phones:
+            print(phones)
             for phone in phones:
                 self.phones = phone
 
@@ -74,7 +77,7 @@ class Contact():
         if re.match(r'^(\+?\d{1,2}[- ]?)?\d{10,15}$', san_phone) or san_phone == '':
             self._phones.append(san_phone)
         else:
-            raise ValueError("Phone number is not valid")
+            raise InvalidFormat(f"Invalid Phone format. Use 10 digits, please")
 
     @property
     def email(self):
@@ -85,7 +88,7 @@ class Contact():
         if re.match(r'^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email) or email == '':
             self._email = email 
         else:
-            ui.show_red_message("Email is not valid")
+            raise InvalidFormat(f"Invalid email format")
 
     @property
     def birthday(self):
@@ -96,7 +99,7 @@ class Contact():
         if re.match(r"[0-3][0-9][.|\\|/|-](([0][1-9])|([1][0-2]))[.|\\|/|-]\d{4}", date) or date == '': 
             self._birthday = date 
         else:
-            ui.show_red_message("Birthday is not valid")
+            raise InvalidFormat(f"Invalid Birthday format. Use -> dd.mm.yyyy")
     
     def __repr__(self) -> str:
         return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
@@ -160,7 +163,7 @@ class AddressBook(UserDict):
     def log(self, action):
         time = date.strftime(date.now(), '%H:%M:%S')
         msg = f'[{time} {action}]'
-        with open("../data/logs.txt", "a") as file:
+        with open("../data/logs.txt", "a+") as file:
             file.write(f'{msg}\n')
 
     def save(self):

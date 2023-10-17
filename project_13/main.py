@@ -13,6 +13,7 @@ else:
 
 
 
+
 def main():
     global ui, ab
     ui = ConsoleUserInterface()
@@ -27,12 +28,23 @@ def main():
         cmd(*data)
 
 
+def input_error(func):
+    def wrapper(*args):
+        try:
+            return func(*args)
+        except Exception as e:
+            ui.show_message(e)
+    return wrapper
+
+
+@ input_error
 def add_command(surname):
      if surname in ab:
          ui.show_red_message(f'Contact with surname {surname} already exists')
      else:
          ab.add_contact(ui, Contact(surname))
 
+@ input_error
 def change_command(surname):
      if surname in ab:
         ab.update_contact(ui, ab[surname])         
@@ -73,7 +85,8 @@ def sort_command(*_):
     dir = ui.user_input('>')
     clear(dir)
     ui.show_green_message("Successfully sorted!")
-    
+
+@ input_error    
 def add_note_command(*_):
     ui.show_green_message('Here starts your new note:')
     new_note = ui.user_input('>')
@@ -92,12 +105,14 @@ def exit_command(*_):
     ui.show_green_message(f"\nGood bye!\n\n")
     ab.save()
     exit()
-    
+
+@ input_error    
 def find_tag_command(*_):
     ui.show_green_message("What tag are you looking for ?")
     tag = ui.user_input('>')
     ui.show_message("\n".join(str(note) for note in ab.notes if tag in note.tags))
 
+@ input_error
 def parser(text):
     closest_cmd = ''
     try:    
