@@ -64,7 +64,8 @@ def add_note_command(*_):
     ui.show_green_message('Wanna add some tags? (comma separated)  [Enter to skip]:')
     tags = ui.user_input('>').replace(',',' ').split(' ')
     new_note_obj = Note(new_note, datetime.now().strftime('%H:%M:%S  %Y-%m-%d'))
-    new_note_obj.add_tag(tags)
+    if tags:
+        new_note_obj.add_tag(tags)
     ab.notes.append(new_note_obj)
 
 def show_notes(*_):
@@ -75,9 +76,11 @@ def exit_command(*_):
     ui.show_green_message(f"\nGood bye!\n\n")
     ab.save("auto_save")
     exit()
-
-
-
+    
+def find_tag_command(*_):
+    ui.show_green_message("What tag are you looking for ?")
+    tag = ui.user_input('>')
+    ui.show_message("\n".join(str(note) for note in ab.notes if tag in note.tags))
 
 def parser(text):
     closest_cmd = ''
@@ -121,8 +124,9 @@ def levenshtein_distance(str_to_check):
         
 CMD_LIST = {
     show_notes: ("show note", "show notes"),
-    add_note_command: ("add notes', 'add note"),
+    add_note_command: ("add notes", "add note"),
     add_command: ("add", "+"),
+    find_tag_command: ("find tag"),
     find_command: ("find",),
     change_command: ("change",),
     show_all_command: ("show all", "show"),
@@ -130,8 +134,7 @@ CMD_LIST = {
     delete_command: ("delete", "del", "remove"),
     help_command: ("help", "h", "?"),
     exit_command: ("exit", "quit", "goodbye",  "."),
-    sort_command: ("sort"),
-    
+    sort_command: ("sort")
 }
 
 

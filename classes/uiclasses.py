@@ -8,12 +8,13 @@ class ConsoleUserInterface():
                         List of all commands:
 'add', '+' - adding a new contact to the address book
 'change' - changing an existing contact
-'find' - searching for contacts by entering the entered text in a property value
+'find' - searching for contacts by the entered text in a property value
 'del', 'delete', 'remove' - delete a contact from the address book
 'delete all', 'remove all', 'clean' - complete cleaning of the address book
 'show all', 'show' - display of all contacts in the address book
 'sort' - sorting files in directories
 'exit', 'quit', 'goodbye',  '.'  - completion of work with the address book, automatic saving of changes made
+'find tag' - searching for notes by the entered tag 
 
 The Address Book contact has the following properties:
  - surname (str),
