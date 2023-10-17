@@ -4,10 +4,12 @@ if __name__ == "__main__":
     from classes.uiclasses import ConsoleUserInterface    
     from classes.abclasses import AddressBook, Contact
     from classes.notes import Note 
+    from sorter import clear
 else:
     from .classes.uiclasses import ConsoleUserInterface    
     from .classes.abclasses import AddressBook, Contact
-    from .classes.notes import Note 
+    from .classes.notes import Note
+    from sorter import clear
 
 
 
@@ -66,9 +68,12 @@ def show_all_command(*_):
             ui.show_message(contact)
 
 
-def sort_command():
-    ...
-
+def sort_command(*_):
+    ui.show_green_message("Enter path you want to be sorted")
+    dir = ui.user_input('>')
+    clear(dir)
+    ui.show_green_message("Successfully sorted!")
+    
 def add_note_command(*_):
     ui.show_green_message('Here starts your new note:')
     new_note = ui.user_input('>')
