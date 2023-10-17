@@ -7,6 +7,7 @@ class Note:
         self.id = f'{Note.id_counter} {time}'
         self.text = text
         self.tags = []
+        Note.id_counter += 1
         
 
     def add_tag(self, tags):
