@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "project-13"
+name = "project_13"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
@@ -7,6 +7,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+
+[tool.poetry.scripts]
+programmulinka = 'project_13.main:main'
 
 
 [build-system]
