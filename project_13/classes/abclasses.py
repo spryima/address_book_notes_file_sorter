@@ -2,6 +2,7 @@ from collections import UserDict
 from datetime import datetime as date
 import pickle as pckl
 import re
+from ..main import ui
 
 
 class Contact():
@@ -60,11 +61,9 @@ class Contact():
         if new_address:
             self.address = new_address
 
+    def __repr__(self) -> str:
+        return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
 
-
-        
-        
-    
     @property
     def phones(self):
         return self._phones
@@ -76,7 +75,7 @@ class Contact():
             self._phones.append(san_phone)
         else:
             raise ValueError("Phone number is not valid")
-        
+
     @property
     def email(self):
         return self._email
@@ -86,7 +85,7 @@ class Contact():
         if re.match(r'^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email) or email == '':
             self._email = email 
         else:
-            raise ValueError("Email is not valid")
+            ui.show_red_message("Email is not valid")
 
     @property
     def birthday(self):
@@ -97,7 +96,7 @@ class Contact():
         if re.match(r"[0-3][0-9][.|\\|/|-](([0][1-9])|([1][0-2]))[.|\\|/|-]\d{4}", date) or date == '': 
             self._birthday = date 
         else:
-            raise ValueError("Birthday is not valid")
+            ui.show_red_message("Birthday is not valid")
     
     def __repr__(self) -> str:
         return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
@@ -161,27 +160,34 @@ class AddressBook(UserDict):
     def log(self, action):
         time = date.strftime(date.now(), '%H:%M:%S')
         msg = f'[{time} {action}]'
-        with open("logs.txt", "a") as file:
+        with open("../data/logs.txt", "a") as file:
             file.write(f'{msg}\n')
 
-    def save(self, file_name):
-        with open(file_name + ".bin", "wb") as file:
+    def save(self):
+        with open("../data/auto_save.bin", "wb") as file:
             pckl.dump(self.data, file)
         self.log(f'AddressBook saved')
-    
-    def load(self, file_name):
+        with open("../data/notes.bin", "wb") as file:
+            pckl.dump(self.notes, file)
+        self.log(f'Notes saved')
+
+    def load(self):
         try:
-            with open(file_name + ".bin", "rb") as file:
+            with open("../data/auto_save.bin", "rb") as file:
                 self.data = pckl.load(file)
         except FileNotFoundError:
             ...
         self.log(f'AddressBook loaded')
-        return self.data
+        try:
+            with open("../data/notes.bin", "rb") as file:
+                self.notes = pckl.load(file)
+        except FileNotFoundError:
+            ...
+        self.log(f'Notes loaded')
+        return self.data, self.notes
+
+        
     
-    
-
-
-
 
 
             

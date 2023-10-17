@@ -4,10 +4,12 @@ if __name__ == "__main__":
     from classes.uiclasses import ConsoleUserInterface    
     from classes.abclasses import AddressBook, Contact
     from classes.notes import Note 
+    from sorter import clear
 else:
     from .classes.uiclasses import ConsoleUserInterface    
     from .classes.abclasses import AddressBook, Contact
-    from .classes.notes import Note 
+    from .classes.notes import Note
+    from sorter import clear
 
 
 
@@ -17,7 +19,7 @@ def main():
     ab = AddressBook()  
 
     ui.show_start_message()
-    ab.load("auto_save")
+    ab.load()
     
     while True:
         message = ui.user_input(f'\033[94m >>> \033[0m')
@@ -66,9 +68,12 @@ def show_all_command(*_):
             ui.show_message(contact)
 
 
-def sort_command():
-    ...
-
+def sort_command(*_):
+    ui.show_green_message("Enter path you want to be sorted")
+    dir = ui.user_input('>')
+    clear(dir)
+    ui.show_green_message("Successfully sorted!")
+    
 def add_note_command(*_):
     ui.show_green_message('Here starts your new note:')
     new_note = ui.user_input('>')
@@ -85,7 +90,7 @@ def show_notes(*_):
 
 def exit_command(*_):
     ui.show_green_message(f"\nGood bye!\n\n")
-    ab.save("auto_save")
+    ab.save()
     exit()
     
 def find_tag_command(*_):
