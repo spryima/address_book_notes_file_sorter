@@ -98,7 +98,7 @@ def parser(text):
     try:    
         for cmd, kwds in CMD_LIST.items():
             for kwd in kwds:
-                if text.lower().startswith(kwd):
+                if ' '.join(text.strip().lower().split()[:2]) == kwd or text.strip().lower().split()[0] == kwd:
                     return cmd, text[len(kwd):].strip().split(" ")
         
         closest_cmd = levenshtein_distance(text.strip().split()[0].lower())

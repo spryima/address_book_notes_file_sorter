@@ -6,11 +6,12 @@ import re
 
 class Contact():
     def __init__(self, surname):
+        
         self.surname = surname
         self.name = ''
-        self.phones = []
-        self.birthday = ''
-        self.email = ''
+        self._phones = []
+        self._birthday = ''
+        self._email = ''
         self.address = ''
 
     def add_name(self, name):
@@ -20,7 +21,7 @@ class Contact():
     def add_phone(self, phones):
         if phones:
             for phone in phones:
-                self.phones.append(phone)
+                self.phones = phone
 
     def add_email(self, email):
         if email:
@@ -41,8 +42,11 @@ class Contact():
         if new_name:  
             self.name = new_name
 
-    def update_phone(self, *_):   #  НЕ ЗАБУТИ ДОРОБИТИ  !!!   << ----------------
-        pass
+    def update_phone(self, phones, *_):   
+        if phones[0] in self._phones:
+            self._phones.remove(phones[0])
+            print(phones[1])
+            self.phones = phones[1]
     
     def update_birthday(self, new_birthday):
         if new_birthday:
@@ -58,46 +62,45 @@ class Contact():
 
 
 
-    def __repr__(self) -> str:
-        return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
         
         
-    #Правильность ввода номера телефона
+    
     @property
-    def phone(self):
-        return self._phone
+    def phones(self):
+        return self._phones
 
-    @phone.setter
-    def phone(self, phone: str):
+    @phones.setter
+    def phones(self, phone: str):
         san_phone = re.sub(r'[-)( ]', '', phone)
-        if re.match('^\\0\d{11}$', san_phone) or san_phone == '':
-            self._phone = san_phone
+        if re.match(r'^(\+?\d{1,2}[- ]?)?\d{10,15}$', san_phone) or san_phone == '':
+            self._phones.append(san_phone)
         else:
             raise ValueError("Phone number is not valid")
         
-    #Правильность ввода электронной почты
     @property
     def email(self):
         return self._email
 
     @email.setter
     def email(self, email: str):
-        if re.match('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email) or email == '':
+        if re.match(r'^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email) or email == '':
             self._email = email 
         else:
             raise ValueError("Email is not valid")
 
-    #Правильность ввода даты
     @property
     def birthday(self):
         return self._birthday
 
     @birthday.setter
     def birthday(self, date):
-        if re.match('^\d{2}.\d{2}.\d{4}$', date) or date == '': 
+        if re.match(r"[0-3][0-9][.|\\|/|-](([0][1-9])|([1][0-2]))[.|\\|/|-]\d{4}", date) or date == '': 
             self._birthday = date 
         else:
             raise ValueError("Birthday is not valid")
+    
+    def __repr__(self) -> str:
+        return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
     
 
 class AddressBook(UserDict):
@@ -133,7 +136,7 @@ class AddressBook(UserDict):
             del self.data[contact.surname]
             contact.update_surname(new_surname)      
         contact.update_name(ui.user_input(f'Name: {contact.name} [Enter to skip]: '))
-        contact.update_phone(ui.user_input(f'Phones {contact.phones} [Enter to skip]: ').split())
+        contact.update_phone(ui.user_input(f'{contact.phones} type old number and new number to replace [Enter to skip]: ').split())
         contact.update_birthday(ui.user_input(f'Birthday: {contact.birthday} [Enter to skip]: '))
         contact.update_email(ui.user_input(f'Email: {contact.email} [Enter to skip]: '))
         contact.update_address(ui.user_input(f'Address: {contact.address} [Enter to skip]: '))
