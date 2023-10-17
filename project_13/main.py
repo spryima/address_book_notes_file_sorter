@@ -1,13 +1,21 @@
 from datetime import datetime
 
-from .classes.uiclasses import ConsoleUserInterface    
-from .classes.abclasses import AddressBook, Contact
-from .classes.notes import Note
+if __name__ == "__main__":
+    from classes.uiclasses import ConsoleUserInterface    
+    from classes.abclasses import AddressBook, Contact
+    from classes.notes import Note 
+else:
+    from .classes.uiclasses import ConsoleUserInterface    
+    from .classes.abclasses import AddressBook, Contact
+    from .classes.notes import Note 
+
+
 
 def main():
+    global ui, ab
     ui = ConsoleUserInterface()
     ab = AddressBook()  
-      
+
     ui.show_start_message()
     ab.load("auto_save")
     
