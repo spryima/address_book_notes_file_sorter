@@ -111,6 +111,12 @@ def find_tag_command(*_):
     ui.show_green_message("What tag are you looking for ?")
     tag = ui.user_input('>')
     ui.show_message("\n".join(str(note) for note in ab.notes if tag in note.tags))
+    
+@ input_error
+def nearby_birthdays_command(*_):
+    ui.show_green_message("Within how much days you are looking for birthdays ?")
+    n_days = ui.user_input('>')
+    ab.nearby_birthday(ui, n_days)
 
 @ input_error
 def parser(text):
@@ -165,7 +171,8 @@ CMD_LIST = {
     delete_command: ("delete", "del", "remove"),
     help_command: ("help", "h", "?"),
     exit_command: ("exit", "quit", "goodbye",  "."),
-    sort_command: ("sort")
+    sort_command: ("sort"),
+    nearby_birthdays_command: ("nearby bds", "nearby birthdays")
 }
 
 

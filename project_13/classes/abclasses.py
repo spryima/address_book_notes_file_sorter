@@ -1,7 +1,8 @@
 from collections import UserDict
-from datetime import datetime as date
+from datetime import datetime as dt
 import pickle as pckl
 import re
+import os
 
 from classes.exceptionclasses import NoSuchPhone, InvalidFormat
 
@@ -104,13 +105,14 @@ class Contact():
     def __repr__(self) -> str:
         return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
     
+def get_path(file_name):
+        current_dir = os.path.dirname(os.path.abspath(__file__))  
+        return os.path.join(current_dir, f'../data/{file_name}')
 
 class AddressBook(UserDict):
     def __init__(self):
         super().__init__()
         self.notes = []
-
-
 
     def add_contact(self, ui , contact: Contact):
             self.data.update({contact.surname:contact})
@@ -148,41 +150,57 @@ class AddressBook(UserDict):
         ui.show_red_message(f'Are you sure you want to delete the contact {contact.surname}?\n')
         if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
             del self.data[contact.surname]
-
+            
+    def nearby_birthday(self, ui, n):
+        today = dt.now()
+        nearby_contacts = []
+        for contact in self.data.values():
+            if contact.birthday:
+                try:
+                    birthdate = dt.strptime(contact.birthday, '%d.%m.%Y').replace(year=today.year)
+                    days_until_birthday = (birthdate - today).days
+                    if 0 <= days_until_birthday <= int(n):
+                        nearby_contacts.append(contact)
+                except ValueError:
+                    pass
+        if nearby_contacts:
+            for contact in nearby_contacts:
+                ui.show_message(contact)
+        else:
+            ui.show_red_message("No contact with birthday within your date.")
 
     def show_contacts(self):
         pass
     
-
     def delete_all(self, ui):
         ui.show_red_message('Are you sure you want to clear the address book?\n')
         if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
             self.data.clear()
-
+            
 
     def log(self, action):
-        time = date.strftime(date.now(), '%H:%M:%S')
+        time = dt.strftime(dt.now(), '%H:%M:%S')
         msg = f'[{time} {action}]'
-        with open("../data/logs.txt", "a+") as file:
+        with open(get_path("logs.txt"), "a+") as file:
             file.write(f'{msg}\n')
 
     def save(self):
-        with open("../data/auto_save.bin", "wb") as file:
+        with open(get_path("auto_save.bin"), "wb") as file:
             pckl.dump(self.data, file)
         self.log(f'AddressBook saved')
-        with open("../data/notes.bin", "wb") as file:
+        with open(get_path("notes.bin"), "wb") as file:
             pckl.dump(self.notes, file)
         self.log(f'Notes saved')
 
     def load(self):
         try:
-            with open("../data/auto_save.bin", "rb") as file:
+            with open(get_path("auto_save.bin"), "rb") as file:
                 self.data = pckl.load(file)
         except FileNotFoundError:
             ...
         self.log(f'AddressBook loaded')
         try:
-            with open("../data/notes.bin", "rb") as file:
+            with open(get_path("notes.bin"), "rb") as file:
                 self.notes = pckl.load(file)
         except FileNotFoundError:
             ...
