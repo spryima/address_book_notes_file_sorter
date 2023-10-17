@@ -17,7 +17,7 @@ def main():
     ab = AddressBook()  
 
     ui.show_start_message()
-    ab.load("auto_save")
+    ab.load()
     
     while True:
         message = ui.user_input(f'\033[94m >>> \033[0m')
@@ -85,7 +85,7 @@ def show_notes(*_):
 
 def exit_command(*_):
     ui.show_green_message(f"\nGood bye!\n\n")
-    ab.save("auto_save")
+    ab.save()
     exit()
     
 def find_tag_command(*_):

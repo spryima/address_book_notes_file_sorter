@@ -158,27 +158,34 @@ class AddressBook(UserDict):
     def log(self, action):
         time = date.strftime(date.now(), '%H:%M:%S')
         msg = f'[{time} {action}]'
-        with open("logs.txt", "a") as file:
+        with open("../data/logs.txt", "a") as file:
             file.write(f'{msg}\n')
 
-    def save(self, file_name):
-        with open(file_name + ".bin", "wb") as file:
+    def save(self):
+        with open("../data/auto_save.bin", "wb") as file:
             pckl.dump(self.data, file)
         self.log(f'AddressBook saved')
-    
-    def load(self, file_name):
+        with open("../data/notes.bin", "wb") as file:
+            pckl.dump(self.notes, file)
+        self.log(f'Notes saved')
+
+    def load(self):
         try:
-            with open(file_name + ".bin", "rb") as file:
+            with open("../data/auto_save.bin", "rb") as file:
                 self.data = pckl.load(file)
         except FileNotFoundError:
             ...
         self.log(f'AddressBook loaded')
-        return self.data
+        try:
+            with open("../data/notes.bin", "rb") as file:
+                self.notes = pckl.load(file)
+        except FileNotFoundError:
+            ...
+        self.log(f'Notes loaded')
+        return self.data, self.notes
+
+        
     
-    
-
-
-
 
 
             
