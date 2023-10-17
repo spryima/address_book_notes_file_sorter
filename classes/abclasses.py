@@ -41,7 +41,7 @@ class Contact():
         if new_name:  
             self.name = new_name
 
-    def update_phone(self, *_):
+    def update_phone(self, *_):   #  НЕ ЗАБУТИ ДОРОБИТИ  !!!   << ----------------
         pass
     
     def update_birthday(self, new_birthday):
@@ -56,8 +56,6 @@ class Contact():
         if new_address:
             self.address = new_address
 
-    def delete_phone(self, value: str):
-        pass
 
 
     def __repr__(self) -> str:
@@ -103,7 +101,12 @@ class Contact():
     
 
 class AddressBook(UserDict):
-        
+    def __init__(self):
+        super().__init__()
+        self.notes = []
+
+
+
     def add_contact(self, ui , contact: Contact):
             self.data.update({contact.surname:contact})
             ui.show_green_message('This command will guide you through creating new contact:\n')
@@ -171,6 +174,8 @@ class AddressBook(UserDict):
             ...
         self.log(f'AddressBook loaded')
         return self.data
+    
+    
 
 
 
