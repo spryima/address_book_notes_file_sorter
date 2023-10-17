@@ -2,6 +2,7 @@ from collections import UserDict
 from datetime import datetime as date
 import pickle as pckl
 import re
+from ..main import ui
 
 
 class Contact():
@@ -56,13 +57,9 @@ class Contact():
         if new_address:
             self.address = new_address
 
-
-
     def __repr__(self) -> str:
         return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
         
-        
-    #Правильность ввода номера телефона
     @property
     def phone(self):
         return self._phone
@@ -73,9 +70,8 @@ class Contact():
         if re.match('^\\0\d{11}$', san_phone) or san_phone == '':
             self._phone = san_phone
         else:
-            raise ValueError("Phone number is not valid")
-        
-    #Правильность ввода электронной почты
+            ui.show_red_message("Phone number is not valid")("Phone number is not valid")
+
     @property
     def email(self):
         return self._email
@@ -85,9 +81,8 @@ class Contact():
         if re.match('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email) or email == '':
             self._email = email 
         else:
-            raise ValueError("Email is not valid")
+            ui.show_red_message("Email is not valid")
 
-    #Правильность ввода даты
     @property
     def birthday(self):
         return self._birthday
@@ -97,7 +92,7 @@ class Contact():
         if re.match('^\d{2}.\d{2}.\d{4}$', date) or date == '': 
             self._birthday = date 
         else:
-            raise ValueError("Birthday is not valid")
+            ui.show_red_message("Birthday is not valid")
     
 
 class AddressBook(UserDict):
