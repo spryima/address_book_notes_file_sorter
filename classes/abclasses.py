@@ -61,14 +61,8 @@ class Contact():
 
 
     def __repr__(self) -> str:
-        return "Surname: {:<10}  Name: {:<10}  Phone: {:<15}  Email: {:<15}  Birthday: {}  Address: {:<15}".format(
-            self.surname,
-            self.name,
-            ", ".join(phone for phone in self.phones),
-            self.email,
-            self.birthday,
-            self.address,
-        )
+        return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
+        
         
     #Правильность ввода номера телефона
     @property
@@ -78,7 +72,7 @@ class Contact():
     @phone.setter
     def phone(self, phone: str):
         san_phone = re.sub(r'[-)( ]', '', phone)
-        if re.match('^\\0\d{11}$', san_phone):
+        if re.match('^\\0\d{11}$', san_phone) or san_phone == '':
             self._phone = san_phone
         else:
             raise ValueError("Phone number is not valid")
@@ -90,7 +84,7 @@ class Contact():
 
     @email.setter
     def email(self, email: str):
-        if re.match('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email):
+        if re.match('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email) or email == '':
             self._email = email 
         else:
             raise ValueError("Email is not valid")
@@ -102,7 +96,7 @@ class Contact():
 
     @birthday.setter
     def birthday(self, date):
-        if re.match('^\d{2}.\d{2}.\d{4}$', date): 
+        if re.match('^\d{2}.\d{2}.\d{4}$', date) or date == '': 
             self._birthday = date 
         else:
             raise ValueError("Birthday is not valid")
