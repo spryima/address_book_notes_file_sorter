@@ -228,6 +228,10 @@ class AddressBook(UserDict):
         return self.data, self.notes
 
     
+    def __iter__(self):
+        return self
+    
+
     def __next__(self):
         
         if self.n_page <= self.count_pages:
