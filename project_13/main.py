@@ -84,6 +84,12 @@ def show_all_command(*_):
     ui.clear_screen()
     for contact in ab.values():
         ui.show_message(contact)
+    ui.show_green_message('Enter the number of contacts per page (default=10)  [Enter to skip]:')
+    number_contacts = ui.user_input('>')
+    if number_contacts:
+        ab.show_contacts(ui, number_contacts)
+    else:
+        ab.show_contacts(ui)
 
 
 def sort_command(*_):
@@ -106,8 +112,12 @@ def add_note_command(*_):
 
 
 def show_notes(*_):
-    for note in ab.notes:
-        ui.show_message(note)
+    ui.show_green_message('Enter the number of notes per page (default=10)  [Enter to skip]:')
+    number_notes = ui.user_input('>')
+    if number_notes:
+        ab.show_notes(ui, number_notes)
+    else:
+        ab.show_notes(ui)
 
 
 def exit_command(*_):
@@ -168,12 +178,12 @@ def levenshtein_distance(str_to_check):
 
 CMD_LIST = {
     find_tag_command: ("find tag",),
-    show_notes: ("show note", "show notes"),
+    show_notes: ("show note", "show notes", "notes"),
     add_note_command: ("add notes", "add note"),
     add_command: ("add", "+"),
     find_command: ("find",),
     change_command: ("change",),
-    show_all_command: ("show all", "show"),
+    show_all_command: ("show all", "show", "pages", "contacts"),
     delete_all_command: ("delete all", "remove all", "clean"), 
     delete_command: ("delete", "del", "remove"),
     help_command: ("help", "h", "?"),

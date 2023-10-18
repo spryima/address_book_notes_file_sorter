@@ -107,6 +107,7 @@ class Contact():
     
     def __repr__(self) -> str:
         return '-' * 50 + f'\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n' + '-' * 50
+
     
 def get_path(file_name):
         current_dir = os.path.dirname(os.path.abspath(__file__))  
@@ -116,6 +117,12 @@ class AddressBook(UserDict):
     def __init__(self):
         super().__init__()
         self.notes = []
+        self.numbers_on_page = 10
+        self.count_pages = 0
+        self.n_page = 1
+        self.idx = 0
+        self.data_list = []
+        
 
     def add_contact(self, ui , contact: Contact):
             self.data.update({contact.surname:contact})
@@ -167,7 +174,24 @@ class AddressBook(UserDict):
                 ui.show_message(contact)
         else:
             ui.show_red_message("No contact with birthday within your date.")
-    
+            
+    def show_contacts(self, ui, contacts_on_page=10):
+        if len(self.data)==0:
+            ui.show_message("AddressBook is empty")
+        else:
+            iterator = self.iterator(numbers_on_page=contacts_on_page)
+            for page in iterator:
+                ui.show_message(page)
+
+    def show_notes(self, ui, notes_on_page=10):
+        if len(self.notes)==0:
+            ui.show_message("List of Notes is empty")
+        else:
+            iterator = self.iterator(numbers_on_page=notes_on_page, for_notes=True)
+            for page in iterator:
+                ui.show_message(page)
+
+
     def delete_all(self, ui):
         ui.show_red_message('Are you sure you want to clear the address book?\n')
         if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
@@ -202,3 +226,53 @@ class AddressBook(UserDict):
             ...
         self.log(f'Notes loaded')
         return self.data, self.notes
+
+    
+    def __next__(self):
+        
+        if self.n_page <= self.count_pages:
+            page_list = []
+            data_slice = self.data_list[self.idx:self.numbers_on_page*self.n_page]
+            result = ''
+            for key, record in data_slice:
+                if data_slice.index((key, record)) == (len(data_slice) - 1):
+                    self.n_page += 1
+                page_list.append(record)
+                self.idx += 1
+            
+            result = '\n'.join(str(p) for p in page_list)   
+            return f'Page #{self.n_page - 1}\n{result}'
+        
+        raise StopIteration
+
+    
+    def iterator(self, numbers_on_page=10, for_notes=False):
+        try:
+            self.numbers_on_page = int(numbers_on_page)
+        except ValueError:
+            raise ValueError("numbers_on_page must be int")
+        
+        data_list = None
+        if for_notes:
+            data_list = self.notes
+        else:
+            data_list = self.data
+         
+        if len(data_list)==0:
+            return self
+        
+        count_pages = len(data_list)/self.numbers_on_page
+        pages = int(count_pages)
+        if count_pages > pages or pages == 0:
+            self.count_pages = pages + 1
+        else:
+            self.count_pages = pages
+        
+        if for_notes:
+            self.data_list = [(self.notes.index(note), note) for note in self.notes]
+        else:
+            self.data_list = [record for record in self.data.items()]
+        self.idx = 0
+        self.n_page = 1
+        return self
+    
