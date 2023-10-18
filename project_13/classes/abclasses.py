@@ -68,9 +68,6 @@ class Contact():
     def __repr__(self) -> str:
         return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
     
-    def __str__(self):
-        return 'Contact: {:<10} | {:<10} | {:^10} | {:<15} | {:<20} | {:<5}'.format(self.name, self.surname, self.birthday, self.email, '; '.join(p for p in self.phones), self.address)
-    
     @property
     def phones(self):
         return self._phones
@@ -216,25 +213,22 @@ class AddressBook(UserDict):
         self.log(f'Notes loaded')
         return self.data, self.notes
     
-    def __iter__(self):
-        return self
+    # def __iter__(self):
+    #     return self
     
-    def __next__(self):
-        
-        if self.n_page <= self.count_pages:
-            page_list = []
-            data_slice = self.data_list[self.idx:self.contacts_on_page*self.n_page]
-            result = ''
-            for key, record in data_slice:
-                if data_slice.index((key, record)) == (len(data_slice) - 1):
-                    self.n_page += 1
-                page_list.append(record)
-                self.idx += 1
-            
-            result = '\n'.join(str(p) for p in page_list)   
-            return f'Page #{self.n_page - 1}\n{result}'
-        
-        raise StopIteration
+    # def __next__(self):
+    #     if self.n_page <= self.count_pages:
+    #         page_list = []
+    #         data_slice = self.data_list[self.idx:self.contacts_on_page*self.n_page]
+    #         result = ''
+    #         for key, record in data_slice:
+    #             if data_slice.index((key, record)) == (len(data_slice) - 1):
+    #                 self.n_page += 1
+    #             page_list.append(record)
+    #             self.idx += 1
+    #         result = '\n'.join(str(p) for p in page_list)   
+    #         return f'Page #{self.n_page - 1}\n{result}'
+    #     raise StopIteration
     
     def iterator(self, contacts_on_page=10):
         try:
