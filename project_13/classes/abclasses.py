@@ -114,9 +114,11 @@ def get_path(file_name):
         return os.path.join(current_dir, f'../data/{file_name}')
 
 class AddressBook(UserDict):
+    note_id = 1
     def __init__(self):
         super().__init__()
         self.notes = []
+        self.note_id = 0
         self.numbers_on_page = 10
         self.count_pages = 0
         self.n_page = 1
@@ -229,6 +231,8 @@ class AddressBook(UserDict):
         try:
             with open(get_path("notes.bin"), "rb") as file:
                 self.notes = pckl.load(file)
+                if self.notes:
+                    self.note_id = int(self.notes[-1].id.split()[0])
         except FileNotFoundError:
             ...
         self.log(f'Notes loaded')
