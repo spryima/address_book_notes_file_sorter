@@ -9,7 +9,7 @@ else:
     from .classes.uiclasses import ConsoleUserInterface    
     from .classes.abclasses import AddressBook, Contact
     from .classes.notes import Note
-    from sorter import clear
+    from .sorter import clear
 
 
 
@@ -51,8 +51,12 @@ def change_command(surname):
      else:
         ui.show_red_message(f'No contacts with surname {surname}')
 
-def find_command(text):
+def find_command(text, *_):
     ui.show_message("\n".join(str(contact) for contact in ab.values() if text in str(contact)))
+
+
+def find_tag_command(tag, *_):
+    ui.show_message("\n".join(str(note) for note in ab.notes if tag in note.tags))
 
 
 def delete_all_command(*_):
@@ -86,6 +90,7 @@ def sort_command(*_):
     clear(dir)
     ui.show_green_message("Successfully sorted!")
 
+
 @ input_error    
 def add_note_command(*_):
     ui.show_green_message('Here starts your new note:')
@@ -97,42 +102,39 @@ def add_note_command(*_):
         new_note_obj.add_tag(tags)
     ab.notes.append(new_note_obj)
 
+
 def show_notes(*_):
     for note in ab.notes:
         ui.show_message(note)
+
 
 def exit_command(*_):
     ui.show_green_message(f"\nGood bye!\n\n")
     ab.save()
     exit()
-
-@ input_error    
-def find_tag_command(*_):
-    ui.show_green_message("What tag are you looking for ?")
-    tag = ui.user_input('>')
-    ui.show_message("\n".join(str(note) for note in ab.notes if tag in note.tags))
     
+
 @ input_error
-def nearby_birthdays_command(*_):
-    ui.show_green_message("Within how much days you are looking for birthdays ?")
-    n_days = ui.user_input('>')
+def nearby_birthdays_command(n_days, *_):
     ab.nearby_birthday(ui, n_days)
+
 
 @ input_error
 def parser(text):
     closest_cmd = ''
+    text = f"{text} "
     try:    
         for cmd, kwds in CMD_LIST.items():
             for kwd in kwds:
-                if ' '.join(text.strip().lower().split()[:2]) == kwd or text.strip().lower().split()[0] == kwd:
-                    return cmd, text[len(kwd):].strip().split(" ")
-        
+                if text.lower().startswith(f'{kwd} '):
+                    return cmd, text[len(kwd):].strip().split(" ")        
         closest_cmd = levenshtein_distance(text.strip().split()[0].lower())
         if closest_cmd:
             return parser(text.replace(text.strip().split()[0], closest_cmd, 1))       
     except IndexError as e:        
         return unknown_command, [] 
     return unknown_command, []
+
 
 def levenshtein_distance(str_to_check):
     distance = len(str_to_check)
@@ -158,12 +160,13 @@ def levenshtein_distance(str_to_check):
         ui.show_message(f'Did you mean "{possible_cmd} "?')
         if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
             return possible_cmd
-        
+
+
 CMD_LIST = {
+    find_tag_command: ("find tag",),
     show_notes: ("show note", "show notes"),
     add_note_command: ("add notes", "add note"),
     add_command: ("add", "+"),
-    find_tag_command: ("find tag"),
     find_command: ("find",),
     change_command: ("change",),
     show_all_command: ("show all", "show"),
@@ -171,7 +174,7 @@ CMD_LIST = {
     delete_command: ("delete", "del", "remove"),
     help_command: ("help", "h", "?"),
     exit_command: ("exit", "quit", "goodbye",  "."),
-    sort_command: ("sort"),
+    sort_command: ("sort",),
     nearby_birthdays_command: ("nearby bds", "nearby birthdays")
 }
 
