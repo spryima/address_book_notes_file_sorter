@@ -80,10 +80,9 @@ def unknown_command():
     ui.show_red_message('Unknown command')
 
 
+@ input_error
 def show_all_command(*_):
     ui.clear_screen()
-    for contact in ab.values():
-        ui.show_message(contact)
     ui.show_green_message('Enter the number of contacts per page (default=10)  [Enter to skip]:')
     number_contacts = ui.user_input('>')
     if number_contacts:
@@ -111,7 +110,9 @@ def add_note_command(*_):
     ab.notes.append(new_note_obj)
 
 
+@ input_error
 def show_notes(*_):
+    ui.clear_screen()
     ui.show_green_message('Enter the number of notes per page (default=10)  [Enter to skip]:')
     number_notes = ui.user_input('>')
     if number_notes:
