@@ -171,6 +171,7 @@ class AddressBook(UserDict):
     def __init__(self):
         super().__init__()
         self.notes = []
+        self.note_id = 0
         self.iterator = Iterator()
         
 
@@ -290,6 +291,8 @@ class AddressBook(UserDict):
         try:
             with open(get_path("notes.bin"), "rb") as file:
                 self.notes = pckl.load(file)
+                if self.notes:
+                    self.note_id = int(self.notes[-1].id.split()[0])
         except FileNotFoundError:
             ...
         self.log(f'Notes loaded')

@@ -80,6 +80,13 @@ def delete_command(surname):
         ui.show_red_message(f'No contacts with surname {surname}')
 
 
+def delete_note_command(note_id, *_):
+     for note in ab.notes:
+        if note.id.split()[0] == note_id:
+            ab.notes.remove(note)
+            ui.show_green_message(f'Note "{note_id}" delete success')
+    
+
 def help_command(*_):
     ui.show_help()
 
@@ -115,7 +122,8 @@ def add_note_command(*_):
     new_note = ui.user_input('>')
     ui.show_green_message('Wanna add some tags? (comma separated)  [Enter to skip]:')
     tags = ui.user_input('>').replace(',',' ').split(' ')
-    new_note_obj = Note(new_note, datetime.now().strftime('%H:%M:%S  %Y-%m-%d'))
+    ab.note_id += 1
+    new_note_obj = Note(new_note, ab.note_id, datetime.now().strftime('%H:%M:%S  %Y-%m-%d'))
     if tags:
         new_note_obj.add_tag(tags)
     ab.notes.append(new_note_obj)
@@ -200,6 +208,7 @@ CMD_LIST = {
     change_note_command: ("change note",),
     change_command: ("change",),
     show_all_command: ("show all", "show", "pages", "contacts"),
+    delete_note_command: ("delete note", "remove note", "del note"), 
     delete_all_command: ("delete all", "remove all", "clean"), 
     delete_command: ("delete", "del", "remove"),
     help_command: ("help", "h", "?"),
