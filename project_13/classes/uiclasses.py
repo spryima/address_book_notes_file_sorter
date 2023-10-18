@@ -11,8 +11,8 @@ class ConsoleUserInterface():
   'find' [\033[90manything\033[92m]     - searching for contacts by the entered text in a property value
   'del', 'delete', 'remove' [\033[90msurname\033[92m] - delete a contact from the Address Book
   'delete all', 'remove all', 'clean'   - complete cleaning of the Address Book
-  'show all', 'show'                    - display of all contacts in the address book
-  'show notes'                          - display of all Notes in the Address Book
+  'show all', 'show', 'pages' 'contacts'- display of all contacts in the address book
+  'show notes', 'notes'                 - display of all Notes in the Address Book
   'sort' [\033[90mpath\033[92m]         - sorting files in directories
   'exit', 'quit', 'goodbye',  '.'       - completion of work with the address book, automatic saving of changes made
   'find tag' [\033[90mtag\033[92m]      - searching for notes by the entered tag \033[0m

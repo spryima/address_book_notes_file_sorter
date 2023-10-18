@@ -97,13 +97,16 @@ def unknown_command():
 @ input_error
 def show_all_command(*_):
     ui.clear_screen()
-    ui.show_green_message('Enter the number of contacts per page (default=10)  [Enter to skip]:')
-    number_contacts = ui.user_input('>')
-    if number_contacts:
-        ab.show_contacts(ui, number_contacts)
+    if len(ab.data):
+        ui.show_green_message('Enter the number of contacts per page (default=10)  [Enter to skip]:')
+        number_contacts = ui.user_input('>')
+        if number_contacts:
+            ab.show_contacts(ui, number_contacts)
+        else:
+            ab.show_contacts(ui)
     else:
-        ab.show_contacts(ui)
-
+        ui.show_green_message('The AddressBook is empty!')
+        
 
 def sort_command(*_):
     ui.show_green_message("Enter path you want to be sorted")
@@ -128,12 +131,15 @@ def add_note_command(*_):
 @ input_error
 def show_notes(*_):
     ui.clear_screen()
-    ui.show_green_message('Enter the number of notes per page (default=10)  [Enter to skip]:')
-    number_notes = ui.user_input('>')
-    if number_notes:
-        ab.show_notes(ui, number_notes)
+    if len(ab.notes):
+        ui.show_green_message('Enter the number of notes per page (default=10)  [Enter to skip]:')
+        number_notes = ui.user_input('>')
+        if number_notes:
+            ab.show_notes(ui, number_notes)
+        else:
+            ab.show_notes(ui)
     else:
-        ab.show_notes(ui)
+        ui.show_green_message('The Notes list is empty!')
 
 @ input_error
 def exit_command(*_):
@@ -194,7 +200,7 @@ def levenshtein_distance(str_to_check):
 
 CMD_LIST = {
     find_tag_command: ("find tag",),
-    show_notes: ("show note", "show notes", "notes"),
+    show_notes: ("show notes", "notes"),
     add_note_command: ("add notes", "add note"),
     add_command: ("add", "+"),
     find_command: ("find",),
