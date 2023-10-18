@@ -1,35 +1,45 @@
-# project_13
+# Programmulinka
 
-GoIT-Python-Core-AsisstantProject
+A command-line sorter and address book, notes management system.
 
-Перед встановленням пакета перевірте наявність PIP.
+## Overview
 
-Встановлення:
+This project is a simple command-line tool for sorting dirs and managing an address book and notes. It allows users to add, modify, delete contacts, and notes. Additionally, it provides functionality for searching, sorting, and displaying information.
 
-Встановіть Assistant із терміналу: використовуйте команду "pip install https://............
+## Features
 
-Для запуску програми напишіть команду в терміналі Assistant після інсталяційного пакету
-Опис
+**Address Book Management:**
 
-Асистент може зберігати всю інформацію про контакти та нотатки, а також сортувати файли в одному зручному місці.
+* Add new contacts.
+* Modify existing contacts.
+* Delete contacts.
+* Search for contacts by name.
 
-Основні команди помічника:
+**Notes Management:**
 
-<a>add contact </a> </p>
-<a>change contact </a> </p>
-<a>create note </a> </p>
-<a>near birthday </a> </p>
-<a>add address </a> </p>
-<a>find contact </a> </p>
-<a>change note </a> </p>
-<a>search by tags </a> </p>
-<a>add email </a> </p>
-<a>show contacts </a> </p>
-<a>change tag </a> </p>
-<a>search by text </a> </p>
-<a>add birthday </a> </p>
-<a>delete contact </a> </p>
-<a>delete note </a> </p>
-<a>sorting files </a> </p>
-<a>read note </a> </p>
-<a>show all tags </a> </p>
+* Add new notes.
+* Modify existing notes.
+* Delete notes.
+* Search for notes.
+
+**Additional Functionality:**
+
+* Sort files in a specified directory.
+* Display nearby birthdays.
+* Basic error handling for user inputs.
+
+## How to use
+
+1. Clone the repository:
+```
+git clone https://github.com/senioree97/project_13.git
+cd project_13
+```
+2. Run the application:
+```
+python main.py
+```
+3. Follow on-screen instructions to interact with the application.
+
+
+
