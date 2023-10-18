@@ -81,7 +81,7 @@ def unknown_command():
 def show_all_command(*_):
     ui.clear_screen()
     for contact in ab.values():
-            ui.show_message(contact)
+        ui.show_message(contact)
 
 def show_contacts_command(*_):
     ui.show_green_message('Enter the number of contacts per page (default=10)  [Enter to skip]:')

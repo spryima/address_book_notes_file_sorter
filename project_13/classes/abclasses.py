@@ -68,8 +68,6 @@ class Contact():
     def __repr__(self) -> str:
         return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
     
-    def __str__(self):
-        return 'Contact: {:<10} | {:<10} | {:^10} | {:<15} | {:<20} | {:<5}'.format(self.name, self.surname, self.birthday, self.email, '; '.join(p for p in self.phones), self.address)
     
     @property
     def phones(self):
