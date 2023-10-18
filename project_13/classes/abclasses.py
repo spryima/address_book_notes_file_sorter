@@ -4,19 +4,17 @@ import pickle as pckl
 import re
 import os
 
-from classes.exceptionclasses import NoSuchPhone, InvalidFormat
-
 
 
 class Contact():
     def __init__(self, surname):
-        
         self.surname = surname
         self.name = ''
         self._phones = []
         self._birthday = ''
         self._email = ''
         self.address = ''
+        self.ui = None
 
     def add_name(self, name):
         if name:
@@ -24,7 +22,6 @@ class Contact():
 
     def add_phone(self, phones):
         if phones:
-            print(phones)
             for phone in phones:
                 self.phones = phone
 
@@ -65,20 +62,20 @@ class Contact():
         if new_address:
             self.address = new_address
 
-    def __repr__(self) -> str:
-        return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
-    
     @property
     def phones(self):
         return self._phones
 
     @phones.setter
-    def phones(self, phone: str):
-        san_phone = re.sub(r'[-)( ]', '', phone)
-        if re.match(r'^(\+?\d{1,2}[- ]?)?\d{10,15}$', san_phone) or san_phone == '':
-            self._phones.append(san_phone)
-        else:
-            raise InvalidFormat(f"Invalid Phone format. Use 10 digits, please")
+    def phones(self, phone: str):          
+        while True:            
+            san_phone = re.sub(r'[-)( ]', '', phone)            
+            if re.match(r'^(\+?\d{1,2}[- ]?)?\d{10,15}$', san_phone) or san_phone == '':
+                self._phones.append(san_phone)
+                break
+            else:
+                self.ui.show_red_message('Invalid phone format. Try again \033[0m [Enter to skip]')
+                phone = self.ui.user_input(f'\033[94m >>> \033[0m')
 
     @property
     def email(self):
@@ -86,10 +83,13 @@ class Contact():
 
     @email.setter
     def email(self, email: str):
-        if re.match(r'^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email) or email == '':
-            self._email = email 
-        else:
-            raise InvalidFormat(f"Invalid email format")
+        while True:                
+            if re.match(r'^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', email) or email == '':
+                self._email = email 
+                break
+            else:
+                self.ui.show_red_message('Invalid email format. Try again\033[0m [Enter to skip]')
+                email = self.ui.user_input(f'\033[94m >>> \033[0m')
 
     @property
     def birthday(self):
@@ -97,11 +97,17 @@ class Contact():
 
     @birthday.setter
     def birthday(self, date):
-        if re.match(r"[0-3][0-9][.|\\|/|-](([0][1-9])|([1][0-2]))[.|\\|/|-]\d{4}", date) or date == '': 
-            self._birthday = date 
-        else:
-            raise InvalidFormat(f"Invalid Birthday format. Use -> dd.mm.yyyy")
+        while True: 
+            if re.match(r"[0-3][0-9][.|\\|/|-](([0][1-9])|([1][0-2]))[.|\\|/|-]\d{4}", date) or date == '': 
+                self._birthday = date
+                break
+            else:
+                self.ui.show_red_message('Invalid Birthday format. Use -> dd.mm.yyyy\033[0m [Enter to skip]')
+                date = self.ui.user_input(f'\033[94m >>> \033[0m')
     
+    def __repr__(self) -> str:
+        return '-' * 50 + f'\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n' + '-' * 50
+
     
 def get_path(file_name):
         current_dir = os.path.dirname(os.path.abspath(__file__))  
@@ -120,15 +126,15 @@ class AddressBook(UserDict):
 
     def add_contact(self, ui , contact: Contact):
             self.data.update({contact.surname:contact})
+            contact.ui = ui
             ui.show_green_message('This command will guide you through creating new contact:\n')
             ui.show_message(f'Surname: {contact.surname}')
             contact.add_name(ui.user_input('Name [Enter to skip]: '))
             contact.add_phone(ui.user_input('Phones space-separate [Enter to skip]: ').split())
-            contact.add_birthday(ui.user_input('Birthday [Enter to skip]: '))
+            contact.add_birthday(ui.user_input('Birthday -> dd.mm.yyyy [Enter to skip]: '))
             contact.add_email(ui.user_input('Email [Enter to skip]: '))
             contact.add_address(ui.user_input('Address [Enter to skip]: '))
-        
-    
+
     def update_contact(self, ui, contact: Contact):
         ui.show_green_message('This command will guide you through updating contact:\n')
         new_surname = ui.user_input(f'Surname: {contact.surname} [Enter to skip]: ') 
@@ -139,19 +145,19 @@ class AddressBook(UserDict):
             self.data[new_surname] = contact
             del self.data[contact.surname]
             contact.update_surname(new_surname)      
+        contact.ui = ui
         contact.update_name(ui.user_input(f'Name: {contact.name} [Enter to skip]: '))
         contact.update_phone(ui.user_input(f'{contact.phones} type old number and new number to replace [Enter to skip]: ').split())
         contact.update_birthday(ui.user_input(f'Birthday: {contact.birthday} [Enter to skip]: '))
         contact.update_email(ui.user_input(f'Email: {contact.email} [Enter to skip]: '))
         contact.update_address(ui.user_input(f'Address: {contact.address} [Enter to skip]: '))
 
-
     def delete_contact(self, ui, contact: Contact):
         ui.show_red_message(f'Are you sure you want to delete the contact {contact.surname}?\n')
         if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
             del self.data[contact.surname]
             
-    def nearby_birthday(self, ui, n):
+    def nearby_birthday(self, ui, days):
         today = dt.now()
         nearby_contacts = []
         for contact in self.data.values():
@@ -159,7 +165,7 @@ class AddressBook(UserDict):
                 try:
                     birthdate = dt.strptime(contact.birthday, '%d.%m.%Y').replace(year=today.year)
                     days_until_birthday = (birthdate - today).days
-                    if 0 <= days_until_birthday <= int(n):
+                    if 0 <= days_until_birthday <= int(days):
                         nearby_contacts.append(contact)
                 except ValueError:
                     pass
@@ -168,7 +174,7 @@ class AddressBook(UserDict):
                 ui.show_message(contact)
         else:
             ui.show_red_message("No contact with birthday within your date.")
-
+            
     def show_contacts(self, ui, contacts_on_page=10):
         if len(self.data)==0:
             ui.show_message("AddressBook is empty")
@@ -184,6 +190,7 @@ class AddressBook(UserDict):
             iterator = self.iterator(numbers_on_page=notes_on_page, for_notes=True)
             for page in iterator:
                 ui.show_message(page)
+
 
     def delete_all(self, ui):
         ui.show_red_message('Are you sure you want to clear the address book?\n')
@@ -219,6 +226,7 @@ class AddressBook(UserDict):
             ...
         self.log(f'Notes loaded')
         return self.data, self.notes
+
     
     def __next__(self):
         
@@ -268,10 +276,3 @@ class AddressBook(UserDict):
         self.n_page = 1
         return self
     
-
-        
-    
-
-
-            
-      
