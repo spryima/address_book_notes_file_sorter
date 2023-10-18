@@ -68,7 +68,6 @@ class Contact():
     def __repr__(self) -> str:
         return '-' * 50 + f'\n\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n\n' + '-' * 50
     
-    
     @property
     def phones(self):
         return self._phones
@@ -221,9 +220,6 @@ class AddressBook(UserDict):
         self.log(f'Notes loaded')
         return self.data, self.notes
     
-    def __iter__(self):
-        return self
-    
     def __next__(self):
         
         if self.n_page <= self.count_pages:
@@ -240,6 +236,7 @@ class AddressBook(UserDict):
             return f'Page #{self.n_page - 1}\n{result}'
         
         raise StopIteration
+
     
     def iterator(self, numbers_on_page=10, for_notes=False):
         try:
