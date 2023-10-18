@@ -51,6 +51,14 @@ def change_command(surname):
      else:
         ui.show_red_message(f'No contacts with surname {surname}')
 
+@ input_error
+def change_note_command(note_id):
+     for note in ab.notes:
+        if note.id.split()[0] == note_id:
+            ui.show_green_message(note)
+            note.edit_note(ui)
+
+
 def find_command(text, *_):
     ui.show_message("\n".join(str(contact) for contact in ab.values() if text in str(contact)))
     ui.show_message("\n".join(str(note) for note in ab.notes if text in note.tags))
@@ -183,6 +191,7 @@ CMD_LIST = {
     add_note_command: ("add notes", "add note"),
     add_command: ("add", "+"),
     find_command: ("find",),
+    change_note_command: ("change note",),
     change_command: ("change",),
     show_all_command: ("show all", "show", "pages", "contacts"),
     delete_all_command: ("delete all", "remove all", "clean"), 
