@@ -113,6 +113,7 @@ def get_path(file_name):
         current_dir = os.path.dirname(os.path.abspath(__file__))  
         return os.path.join(current_dir, f'../data/{file_name}')
 
+
 class Iterator:
     def __init__(self):
         self.numbers_on_page = 10
@@ -289,8 +290,6 @@ class AddressBook(UserDict):
         try:
             with open(get_path("notes.bin"), "rb") as file:
                 self.notes = pckl.load(file)
-                if self.notes:
-                    self.note_id = int(self.notes[-1].id.split()[0])
         except FileNotFoundError:
             ...
         self.log(f'Notes loaded')
