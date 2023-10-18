@@ -200,9 +200,21 @@ class AddressBook(UserDict):
 
 
     def delete_all(self, ui):
-        ui.show_red_message('Are you sure you want to clear the address book?\n')
-        if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
-            self.data.clear()
+        if len(self.data):
+            ui.show_red_message('Are you sure you want to clear the AddressBook?\n')
+            if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
+                self.data.clear()
+                ui.show_green_message('The AddressBook is empty!')
+        else:
+            ui.show_green_message('The AddressBook is empty!')
+        
+        if len(self.notes):
+            ui.show_red_message('Are you sure you want to clear the Notes?\n')
+            if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
+                self.notes.clear()
+                ui.show_green_message('The Notes list is empty!')
+        else:
+            ui.show_green_message('The Notes list is empty!')
             
 
     def log(self, action):
