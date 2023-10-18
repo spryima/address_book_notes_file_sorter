@@ -180,16 +180,23 @@ class AddressBook(UserDict):
             ui.show_message("AddressBook is empty")
         else:
             iterator = self.iterator(numbers_on_page=contacts_on_page)
-            for page in iterator:
-                ui.show_message(page)
-
+            self.pagination(ui, iterator)
+            
     def show_notes(self, ui, notes_on_page=10):
         if len(self.notes)==0:
             ui.show_message("List of Notes is empty")
         else:
             iterator = self.iterator(numbers_on_page=notes_on_page, for_notes=True)
-            for page in iterator:
-                ui.show_message(page)
+            self.pagination(ui, iterator)
+            
+    def pagination(self, ui, iterator):
+        iter = 0
+        for page in iterator:
+            ui.show_message(page)
+            iter += 1
+            if iter < self.count_pages:
+                if ui.user_input('Next page (Y/N):  ').lower() not in ('y', 'yes'):
+                    break
 
 
     def delete_all(self, ui):
@@ -245,7 +252,7 @@ class AddressBook(UserDict):
                 self.idx += 1
             
             result = '\n'.join(str(p) for p in page_list)   
-            return f'Page #{self.n_page - 1}\n{result}'
+            return f'Page #{self.n_page - 1} from {self.count_pages}\n{result}'
         
         raise StopIteration
 
