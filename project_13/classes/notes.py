@@ -1,9 +1,10 @@
 class Note:
-    def __init__(self, text, id_counter, time):
-        self.id = f'{id_counter} {time}'
+    id_counter = 1
+    def __init__(self, text, time):
+        self.id = f'{Note.id_counter} {time}'
         self.text = text
         self.tags = set()
-        
+        Note.id_counter += 1
         
 
     def add_tag(self, tags):
