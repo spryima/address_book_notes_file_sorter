@@ -53,6 +53,8 @@ def change_command(surname):
 
 def find_command(text, *_):
     ui.show_message("\n".join(str(contact) for contact in ab.values() if text in str(contact)))
+    ui.show_message("\n".join(str(note) for note in ab.notes if text in note.tags))
+    ui.show_message("\n".join(str(note) for note in ab.notes if text in note.text))
 
 
 def find_tag_command(tag, *_):
@@ -81,7 +83,7 @@ def unknown_command():
 def show_all_command(*_):
     ui.clear_screen()
     for contact in ab.values():
-            ui.show_message(contact)
+        ui.show_message(contact)
 
 
 def sort_command(*_):
@@ -118,6 +120,8 @@ def exit_command(*_):
 def nearby_birthdays_command(n_days, *_):
     ab.nearby_birthday(ui, n_days)
 
+def do_nothing(*_):
+    pass
 
 @ input_error
 def parser(text):
@@ -157,7 +161,7 @@ def levenshtein_distance(str_to_check):
                 distance = dp[m][n]
                 possible_cmd = cmd
     if distance < len(str_to_check):
-        ui.show_message(f'Did you mean "{possible_cmd} "?')
+        ui.show_message(f'Did you mean "{possible_cmd}"?')
         if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
             return possible_cmd
 
@@ -175,7 +179,8 @@ CMD_LIST = {
     help_command: ("help", "h", "?"),
     exit_command: ("exit", "quit", "goodbye",  "."),
     sort_command: ("sort",),
-    nearby_birthdays_command: ("nearby bds", "nearby birthdays")
+    nearby_birthdays_command: ("gbd",),
+    do_nothing: ("",),
 }
 
 

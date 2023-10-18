@@ -5,26 +5,19 @@ import os
 
 class ConsoleUserInterface():
     help_message = """
-                        List of all commands:
-'add', '+' - adding a new contact to the address book
-'change' - changing an existing contact
-'find' - searching for contacts by the entered text in a property value
-'del', 'delete', 'remove' - delete a contact from the address book
-'delete all', 'remove all', 'clean' - complete cleaning of the address book
-'show all', 'show' - display of all contacts in the address book
-'sort' - sorting files in directories
-'exit', 'quit', 'goodbye',  '.'  - completion of work with the address book, automatic saving of changes made
-'find tag' - searching for notes by the entered tag 
-
-The Address Book contact has the following properties:
- - surname (str),
- - name (str),
- - phones (list of str),
- - email (str),
- - birthday (date),
- - address (str)
-
+                        \033[92m List of all commands:
+  'add', '+' [\033[90msurname\033[92m]  - adding a new contact to the Address Book
+  'change' [\033[90msurname\033[92m]    - changing an existing contact
+  'find' [\033[90manything\033[92m]     - searching for contacts by the entered text in a property value
+  'del', 'delete', 'remove' [\033[90msurname\033[92m] - delete a contact from the Address Book
+  'delete all', 'remove all', 'clean'   - complete cleaning of the Address Book
+  'show all', 'show'                    - display of all contacts in the address book
+  'show notes'                          - display of all Notes in the Address Book
+  'sort' [\033[90mpath\033[92m]         - sorting files in directories
+  'exit', 'quit', 'goodbye',  '.'       - completion of work with the address book, automatic saving of changes made
+  'find tag' [\033[90mtag\033[92m]      - searching for notes by the entered tag \033[0m
 """
+
     
     @staticmethod
     def show_green_message(text):
