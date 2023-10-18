@@ -195,7 +195,7 @@ class AddressBook(UserDict):
             ui.show_message(page)
             iter += 1
             if iter < self.count_pages:
-                if ui.user_input('Next page (Y/N):  ').lower() not in ('y', 'yes'):
+                if ui.user_input('            [Enter to next page]'):
                     break
 
 
