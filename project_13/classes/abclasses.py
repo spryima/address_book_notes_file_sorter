@@ -1,8 +1,10 @@
-from collections import UserDict
-from datetime import datetime as dt
+from datetime import datetime
 import pickle as pckl
 import re
 import os
+
+from collections import UserDict
+from datetime import datetime as dt
 
 
 
@@ -96,14 +98,19 @@ class Contact():
         return self._birthday
 
     @birthday.setter
-    def birthday(self, date):
-        while True: 
-            if re.match(r"[0-3][0-9][.|\\|/|-](([0][1-9])|([1][0-2]))[.|\\|/|-]\d{4}", date) or date == '': 
-                self._birthday = date
-                break
-            else:
+    def birthday(self, date_str):
+        while True:
+            try:
+                parsed_date = datetime.strptime(date_str, '%d.%m.%Y')
+                if parsed_date.date() <= datetime.today().date():
+                    self._birthday = date_str
+                    break
+                else:
+                    self.ui.show_red_message('The date cannot be in the future.\033[0m [Enter to skip]')
+            except ValueError:
                 self.ui.show_red_message('Invalid Birthday format. Use -> dd.mm.yyyy\033[0m [Enter to skip]')
-                date = self.ui.user_input(f'\033[94m >>> \033[0m')
+            
+            date_str = self.ui.user_input(f'\033[94m >>> \033[0m')
     
     def __repr__(self) -> str:
         return '-' * 50 + f'\nSurname: {self.surname}\nName: {self.name}\nPhones: {", ".join(phone for phone in self.phones)}\nEmail: {self.email}\nBirthday: {self.birthday}\nAddress: {self.address}\n' + '-' * 50

@@ -49,7 +49,7 @@ def change_command(surname):
      if surname in ab:
         ab.update_contact(ui, ab[surname])         
      else:
-        ui.show_red_message(f'No contacts with surname {surname}')
+        ui.show_message(f'No contacts with surname {surname}')
 
 @ input_error
 def change_note_command(note_id):
