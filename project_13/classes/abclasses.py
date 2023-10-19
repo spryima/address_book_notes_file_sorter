@@ -102,7 +102,7 @@ def get_path(file_name):
 
 class Iterator:
     def __init__(self):
-        self.numbers_on_page = 10
+        self.numbers_on_page = 5
         self.count_pages = 0
         self.n_page = 1
         self.idx = 0
@@ -128,11 +128,11 @@ class Iterator:
         
         raise StopIteration
 
-    def iterations(self, data_list, numbers_on_page=10, for_notes=False):
+    def iterations(self, data_list, numbers_on_page=5, for_notes=False):
         try:
             self.numbers_on_page = int(numbers_on_page)
         except ValueError:
-            raise ValueError("numbers_on_page must be int")
+            pass
         
         if len(data_list)==0:
             return self
@@ -210,13 +210,13 @@ class AddressBook(UserDict):
         else:
             ui.show_red_message("No contact with birthday within your date.")
             
-    def show_contacts(self, ui, contacts_on_page=10):
+    def show_contacts(self, ui, contacts_on_page=5):
         if not self.data:
             ui.show_message("AddressBook is empty")
         else:
             self.pagination(ui, self.iterator, self.data, contacts_on_page)
             
-    def show_notes(self, ui, notes_on_page=10):
+    def show_notes(self, ui, notes_on_page=5):
         if not self.notes:
             ui.show_message("List of Notes is empty")
         else:

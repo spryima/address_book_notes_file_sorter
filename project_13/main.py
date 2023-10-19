@@ -47,6 +47,8 @@ def change_command(surname):
 
 @input_error
 def change_note_command(note_id):
+     if not note_id:
+         note_id = ui.user_input('Please Enter Note ID ')
      for note in ab.notes:
         if note.id.split()[0] == note_id:
             ui.show_green_message(note)
@@ -77,8 +79,11 @@ def delete_command(surname):
 def delete_note_command(note_id, *_):
      for note in ab.notes:
         if note.id.split()[0] == note_id:
-            ab.notes.remove(note)
-            ui.show_green_message(f'Note "{note_id}" delete success')
+            ui.show_green_message("Delete this note?")
+            ui.show_message(note)
+            if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
+                ab.notes.remove(note)
+                ui.show_green_message(f'Note "{note_id}" delete success')
     
 
 def help_command(*_):
@@ -93,7 +98,7 @@ def unknown_command():
 def show_all_command(*_):
     ui.clear_screen()
     if ab.data:
-        ui.show_green_message('Enter the number of contacts per page (default=10)  [Enter to skip]:')
+        ui.show_green_message('Enter the number of contacts per page (default=5)  [Enter to skip]:')
         number_contacts = ui.user_input('>')
         if number_contacts:
             ab.show_contacts(ui, number_contacts)
@@ -127,7 +132,7 @@ def add_note_command(*_):
 def show_notes(*_):
     ui.clear_screen()
     if ab.notes:
-        ui.show_green_message('Enter the number of notes per page (default=10)  [Enter to skip]:')
+        ui.show_green_message('Enter the number of notes per page (default=5)  [Enter to skip]:')
         number_notes = ui.user_input('>')
         if number_notes:
             ab.show_notes(ui, number_notes)
