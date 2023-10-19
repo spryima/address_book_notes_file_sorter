@@ -2,13 +2,14 @@ from datetime import datetime
 import pickle as pckl
 import re
 import os
+from contextlib import suppress
 
 from collections import UserDict
 from datetime import datetime as dt
 
 
 
-class Contact():
+class Contact:
     def __init__(self, surname):
         self.surname = surname
         self.name = ''
@@ -220,13 +221,11 @@ class AddressBook(UserDict):
         nearby_contacts = []
         for contact in self.data.values():
             if contact.birthday:
-                try:
+                with suppress(ValueError):
                     birthdate = dt.strptime(contact.birthday, '%d.%m.%Y').replace(year=today.year)
                     days_until_birthday = (birthdate - today).days
                     if 0 <= days_until_birthday <= int(days):
                         nearby_contacts.append(contact)
-                except ValueError:
-                    pass
         if nearby_contacts:
             for contact in nearby_contacts:
                 ui.show_message(contact)
@@ -234,13 +233,13 @@ class AddressBook(UserDict):
             ui.show_red_message("No contact with birthday within your date.")
             
     def show_contacts(self, ui, contacts_on_page=10):
-        if len(self.data)==0:
+        if not self.data:
             ui.show_message("AddressBook is empty")
         else:
             self.pagination(ui, self.iterator, self.data, contacts_on_page)
             
     def show_notes(self, ui, notes_on_page=10):
-        if len(self.notes)==0:
+        if not self.notes:
             ui.show_message("List of Notes is empty")
         else:
             self.pagination(ui, self.iterator, self.notes, numbers_on_page=notes_on_page, for_notes=True)
@@ -257,7 +256,7 @@ class AddressBook(UserDict):
 
 
     def delete_all(self, ui):
-        if len(self.data):
+        if self.data:
             ui.show_red_message('Are you sure you want to clear the AddressBook?\n')
             if ui.user_input('Y/n:  ').lower() in ('y', 'yes'):
                 self.data.clear()
@@ -289,18 +288,14 @@ class AddressBook(UserDict):
         self.log(f'Notes saved')
 
     def load(self):
-        try:
+        with suppress(FileNotFoundError):
             with open(get_path("auto_save.bin"), "rb") as file:
                 self.data = pckl.load(file)
-        except FileNotFoundError:
-            ...
         self.log(f'AddressBook loaded')
-        try:
+        with suppress(FileNotFoundError):
             with open(get_path("notes.bin"), "rb") as file:
                 self.notes = pckl.load(file)
                 if self.notes:
                     self.note_id = int(self.notes[-1].id.split()[0])
-        except FileNotFoundError:
-            ...
         self.log(f'Notes loaded')
         return self.data, self.notes

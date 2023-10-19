@@ -1,4 +1,5 @@
 from datetime import datetime
+from contextlib import suppress
 
 if __name__ == "__main__":
     from classes.uiclasses import ConsoleUserInterface    
@@ -10,8 +11,6 @@ else:
     from .classes.abclasses import AddressBook, Contact
     from .classes.notes import Note
     from .sorter import clear
-
-
 
 
 def main():
@@ -37,21 +36,21 @@ def input_error(func):
     return wrapper
 
 
-@ input_error
+@input_error
 def add_command(surname):
      if surname in ab:
          ui.show_red_message(f'Contact with surname {surname} already exists')
      else:
          ab.add_contact(ui, Contact(surname))
 
-@ input_error
+@input_error
 def change_command(surname):
      if surname in ab:
         ab.update_contact(ui, ab[surname])         
      else:
         ui.show_message(f'No contacts with surname {surname}')
 
-@ input_error
+@input_error
 def change_note_command(note_id):
      for note in ab.notes:
         if note.id.split()[0] == note_id:
@@ -95,10 +94,10 @@ def unknown_command():
     ui.show_red_message('Unknown command')
 
 
-@ input_error
+@input_error
 def show_all_command(*_):
     ui.clear_screen()
-    if len(ab.data):
+    if ab.data:
         ui.show_green_message('Enter the number of contacts per page (default=10)  [Enter to skip]:')
         number_contacts = ui.user_input('>')
         if number_contacts:
@@ -116,7 +115,7 @@ def sort_command(*_):
     ui.show_green_message("Successfully sorted!")
 
 
-@ input_error    
+@input_error    
 def add_note_command(*_):
     ui.show_green_message('Here starts your new note:')
     new_note = ui.user_input('>')
@@ -129,10 +128,10 @@ def add_note_command(*_):
     ab.notes.append(new_note_obj)
 
 
-@ input_error
+@input_error
 def show_notes(*_):
     ui.clear_screen()
-    if len(ab.notes):
+    if ab.notes:
         ui.show_green_message('Enter the number of notes per page (default=10)  [Enter to skip]:')
         number_notes = ui.user_input('>')
         if number_notes:
@@ -149,26 +148,25 @@ def exit_command(*_):
     exit()
     
 
-@ input_error
+@input_error
 def nearby_birthdays_command(n_days, *_):
     ab.nearby_birthday(ui, n_days)
 
 def do_nothing(*_):
     pass
 
-@ input_error
+@input_error
 def parser(text):
     closest_cmd = ''
     text = f"{text} "
-    try:    
+    with suppress(IndexError):
         for cmd, kwds in CMD_LIST.items():
             for kwd in kwds:
                 if text.lower().startswith(f'{kwd} '):
                     return cmd, text[len(kwd):].strip().split(" ")        
         closest_cmd = levenshtein_distance(text.strip().split()[0].lower())
         if closest_cmd:
-            return parser(text.replace(text.strip().split()[0], closest_cmd, 1))       
-    except IndexError as e:        
+            return parser(text.replace(text.strip().split()[0], closest_cmd, 1))        
         return unknown_command, [] 
     return unknown_command, []
 
