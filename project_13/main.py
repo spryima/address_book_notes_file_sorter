@@ -1,16 +1,11 @@
 from datetime import datetime
 from contextlib import suppress
 
-if __name__ == "__main__":
-    from classes.uiclasses import ConsoleUserInterface    
-    from classes.abclasses import AddressBook, Contact
-    from classes.notes import Note 
-    from sorter import clear
-else:
-    from .classes.uiclasses import ConsoleUserInterface    
-    from .classes.abclasses import AddressBook, Contact
-    from .classes.notes import Note
-    from .sorter import clear
+from project_13.classes.uiclasses import ConsoleUserInterface    
+from project_13.classes.abclasses import AddressBook, Contact
+from project_13.classes.notes import Note 
+from project_13.sorter import clear
+
 
 
 def main():
