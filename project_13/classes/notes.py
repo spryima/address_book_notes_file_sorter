@@ -18,7 +18,7 @@ class Note:
     def edit_note(self, ui):
         ui.show_message('Here you can retype your note')
         self.text = ui.user_input('>')
-        ui.show_message(self.tags)
+        ui.show_message(f" Your tags: {', '.join(self.tags)}")
         ui.show_green_message('Wanna change some tags? Type it (comma separated)  [Enter to skip]:')
         tags = set(ui.user_input('>').split())
         if tags:
