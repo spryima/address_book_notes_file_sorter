@@ -1,4 +1,4 @@
-# Addressbook
+# Address Book
 
 A command-line sorter and address book, notes management system.
 
