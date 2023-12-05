@@ -1,10 +1,10 @@
-# Programmulinka
+# Addressbook
 
 A command-line sorter and address book, notes management system.
 
 ## Overview
 
-This project is a simple command-line tool for sorting dirs and managing an address book and notes. It allows users to add, modify, delete contacts, and notes. Additionally, it provides functionality for searching, sorting, and displaying information.
+Command-line tool for sorting dirs and managing an address book and notes. It allows users to add, modify, delete contacts, and notes. Additionally, it provides functionality for searching, sorting, and displaying information.
 
 ## Features
 
