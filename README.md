@@ -4,7 +4,7 @@ A command-line sorter and address book, notes management system.
 
 ## Overview
 
-Command-line tool for sorting dirs and managing an address book and notes. It allows users to add, modify, delete contacts, and notes. Additionally, it provides functionality for searching, sorting, and displaying information.
+Command-line tool for sorting dirs and managing an address book and notes. It allows users to add, modify, delete contacts, and notes. Additionally, it provides functionality for searching, sorting, and displaying information. The project also utilizes the Levenshtein Distance algorithm to enhance the user experience. This algorithm calculates the minimal number of edits needed to change one word into another, enabling the system to suggest the closest matching command when a user makes a typographical error in their input. This feature ensures a more forgiving and user-friendly command-line interface, reducing frustration from minor mistakes.
 
 ## Features
 
