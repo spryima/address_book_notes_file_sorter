@@ -32,8 +32,8 @@ Command-line tool for sorting dirs and managing an address book and notes. It al
 
 1. Clone the repository:
 ```
-git clone https://github.com/senioree97/project_13.git
-cd project_13
+https://github.com/spryima/address_book_notes_file_sorter.git
+cd address_book_notes_file_sorter
 ```
 2. Run the application:
 ```
